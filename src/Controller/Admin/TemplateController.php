@@ -4,7 +4,7 @@ namespace Codersgarden\MultiLangMailer\Controller\Admin;
 
 use Codersgarden\MultiLangMailer\Controller\Controller;
 use Codersgarden\MultiLangMailer\Models\Placeholder;
-use Codersgarden\MultiLangMailer\Models\Template;
+use Codersgarden\MultiLangMailer\Models\MailTemplate;
 use Illuminate\Support\Facades\Request;
 
 class TemplateController extends Controller
@@ -14,7 +14,7 @@ class TemplateController extends Controller
      */
     public function index()
     {
-        $templates = Template::all();
+        $templates = MailTemplate::all();
         return view('email-templates::admin.templates.index', compact('templates'));
     }
 
@@ -46,7 +46,7 @@ class TemplateController extends Controller
         ]);
 
         // Create template
-        $template = Template::create(['identifier' => $validated['identifier']]);
+        $template = MailTemplate::create(['identifier' => $validated['identifier']]);
 
         // Attach placeholders
         if (isset($validated['placeholders'])) {
@@ -68,7 +68,7 @@ class TemplateController extends Controller
     /**
      * Show the form for editing the specified template.
      */
-    public function edit(Template $template)
+    public function edit(MailTemplate $template)
     {
         $locales = config('app.locales', ['en']);
         $availablePlaceholders = Placeholder::all();
@@ -79,7 +79,7 @@ class TemplateController extends Controller
     /**
      * Update the specified template in storage.
      */
-    public function update(Request $request, Template $template)
+    public function update(Request $request, MailTemplate $template)
     {
         $locales = config('app.locales', ['en']);
 
@@ -113,7 +113,7 @@ class TemplateController extends Controller
     /**
      * Remove the specified template from storage.
      */
-    public function destroy(Template $template)
+    public function destroy(MailTemplate $template)
     {
         $template->delete();
         return redirect()->route('email-templates.admin.templates.index')->with('success', __('email-templates::messages.template_deleted'));
