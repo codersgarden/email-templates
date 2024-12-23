@@ -5,7 +5,7 @@
 @section('content')
     <div class="container mt-4">
         <h1>{{ __('email-templates::messages.placeholders') }}</h1>
-        <a href="{{ route('email-templates.admin.placeholders.create') }}" class="btn btn-primary mb-3">
+        <a href="{{ route('admin.placeholders.create') }}" class="btn btn-primary mb-3">
             {{ __('email-templates::messages.create_placeholder') }}
         </a>
 
@@ -31,13 +31,13 @@
                         <td>{{ $placeholder->description ?? '-' }}</td>
                         <td>{{ $placeholder->data_type ?? '-' }}</td>
                         <td>
-                            <a href="{{ route('email-templates.admin.placeholders.edit', $placeholder->id) }}"
+                            <a href="{{ route('admin.placeholders.edit', $placeholder->id) }}"
                                 class="btn btn-sm btn-warning">
                                 {{ __('email-templates::messages.edit') }}
                             </a>
 
-                            <form action="{{ route('email-templates.admin.placeholders.destroy', $placeholder->id) }}"
-                                method="POST" class="d-inline-block"
+                            <form action="{{ route('admin.placeholders.destroy', $placeholder->id) }}" method="POST"
+                                class="d-inline-block"
                                 onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
                                 @csrf
                                 @method('DELETE')

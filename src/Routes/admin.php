@@ -11,7 +11,7 @@ Route::group(['prefix' => 'admin/email-templates', 'middleware' => ['web', 'auth
         Route::get('/create', 'create')->name('admin.placeholders.create');
         Route::post('/', 'store')->name('admin.placeholders.store');
         Route::get('/{id}', 'edit')->name('admin.placeholders.edit');
-        Route::put('/{id}', 'update')->name('admin.placeholders.update');
+        Route::post('/{id}', 'update')->name('admin.placeholders.update');
         Route::delete('/{id}', 'destroy')->name('admin.placeholders.destroy');
     });
 
@@ -20,7 +20,7 @@ Route::group(['prefix' => 'admin/email-templates', 'middleware' => ['web', 'auth
         Route::get('/create', 'create')->name('admin.templates.create');
         Route::post('/', 'store')->name('admin.templates.store');
         Route::get('/{id}', 'edit')->name('admin.templates.edit');
-        Route::put('/{id}', 'update')->name('admin.templates.update');
+        Route::post('/{id}', 'update')->name('admin.templates.update');
         Route::delete('/{id}', 'destroy')->name('admin.templates.destroy');
     });
 });

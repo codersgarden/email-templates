@@ -23,18 +23,20 @@ class PlaceholderController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'data_type' => 'required',
             'description' => 'required',
         ]);
 
         $placeholder = new Placeholder();
         $placeholder->name = $request->name;
         $placeholder->description = $request->description;
+        $placeholder->data_type = $request->data_type;
         $placeholder->save();
 
         return redirect()->route('admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_created'));
     }
 
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
         $placeholder = Placeholder::findOrFail($id);
         return view('email-templates::admin.placeholders.edit', compact('placeholder'));
@@ -44,12 +46,14 @@ class PlaceholderController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'data_type' => 'required',
             'description' => 'required',
         ]);
 
         $placeholder = Placeholder::findOrFail($id);
         $placeholder->name = $request->name;
         $placeholder->description = $request->description;
+        $placeholder->data_type = $request->data_type;
         $placeholder->save();
 
         return redirect()->route('admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_updated'));
