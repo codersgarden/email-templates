@@ -1,6 +1,6 @@
 <!-- src/Resources/views/admin/templates/index.blade.php -->
 
-@extends('layouts.admin')
+@extends('email-templates::layouts.admin')
 
 @section('content')
     <div class="container mt-4">
