@@ -22,8 +22,8 @@ class EmailTemplatesServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'email-templates');
 
         // Load translations
-        if (is_dir(__DIR__ . '/../Resources/lang')) {
-            $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'email-templates');
+        if (is_dir(__DIR__ . '/../Lang')) {
+            $this->loadTranslationsFrom(__DIR__ . '/../Lang', 'email-templates');
         }
 
         // Load migrations
@@ -35,17 +35,6 @@ class EmailTemplatesServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../database/migrations/' => database_path('migrations'),
         ], 'email-templates-migrations');
-
-
-        $this->publishes([
-            __DIR__ . '/../Resources/views' => resource_path('views/vendor/email-templates'),
-        ], 'email-templates-views');
-
-        if (is_dir(__DIR__ . '/../Resources/lang')) {
-            $this->publishes([
-                __DIR__ . '/../Resources/lang' => resource_path('lang/vendor/email-templates'),
-            ], 'email-templates-lang');
-        }
 
         $this->publishes([
             __DIR__ . '/../Config/email-templates.php' => config_path('email-templates.php'),
