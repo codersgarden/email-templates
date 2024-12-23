@@ -53,7 +53,7 @@ class EmailTemplatesServiceProvider extends ServiceProvider
     public function register()
     {
         // Merge package config
-        $this->mergeConfigFrom(__DIR__ . '/../config/email-templates.php', 'email-templates');
+        $this->mergeConfigFrom(__DIR__ . '/../Config/email-templates.php', 'email-templates');
 
         // Bind services
         $this->app->singleton(EmailTemplateService::class, function ($app) {
