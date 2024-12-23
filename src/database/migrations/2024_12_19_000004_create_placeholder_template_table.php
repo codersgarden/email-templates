@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('placeholder_template', function (Blueprint $table) {
             $table->id();
             $table->foreignId('placeholder_id');
-            $table->foreignId('template_id');
+            $table->foreignId('mail_template_id');
             $table->timestamps();
         });
     }

@@ -10,7 +10,7 @@ class CreateTemplateTranslationsTable extends Migration
     {
         Schema::create('template_translations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('template_id');
+            $table->foreignId('mail_template_id');
             $table->string('locale')->index();
             $table->string('subject');
             $table->text('body');

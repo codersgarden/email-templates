@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('templates', function (Blueprint $table) {
+        Schema::create('mail_templates', function (Blueprint $table) {
             $table->id();
             $table->string('identifier')->unique();
             $table->timestamps();
