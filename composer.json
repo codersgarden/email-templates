@@ -2,13 +2,23 @@
     "name": "codersgarden/multi-lang-mailer",
     "description": "MailCraft Translations simplifies email management with features to create, modify, and delete custom email templates. It supports multilingual email translations for a global audience and ensures seamless, professional email sending. Perfect for scalable, personalized, and efficient communication in multiple languages",
     "type": "library",
+    "license": "MIT",
     "require": {
         "laravel/framework": "^11.36"
     },
-    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Codersgarden\\MultiLangMailer\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Codersgarden\\MultiLangMailer\\Providers\\EmailTemplatesServiceProvider"
+            ],
+            "aliases": {
+                "EmailTemplates": "Codersgarden\\MultiLangMailer\\Facades\\EmailTemplates"
+            }
         }
     },
     "authors": [
