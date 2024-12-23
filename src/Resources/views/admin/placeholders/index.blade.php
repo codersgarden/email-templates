@@ -35,9 +35,10 @@
                                 class="btn btn-sm btn-warning">
                                 {{ __('email-templates::messages.edit') }}
                             </a>
+
                             <form action="{{ route('email-templates.admin.placeholders.destroy', $placeholder->id) }}"
                                 method="POST" class="d-inline-block"
-                                onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete_placeholder') }}');">
+                                onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger">

@@ -8,75 +8,57 @@ use Illuminate\Http\Request;
 
 class PlaceholderController extends Controller
 {
-    /**
-     * Display a listing of the placeholders.
-     */
-    public function index()
+    public function index(Request $request)
     {
         $placeholders = Placeholder::all();
         return view('email-templates::admin.placeholders.index', compact('placeholders'));
     }
 
-    /**
-     * Show the form for creating a new placeholder.
-     */
-    public function create()
+    public function create(Request $request)
     {
         return view('email-templates::admin.placeholders.create');
     }
 
-    /**
-     * Store a newly created placeholder in storage.
-     */
     public function store(Request $request)
     {
-        // Validate input
-        $validated = $request->validate([
-            'name' => 'required|unique:placeholders,name',
-            'description' => 'nullable|string',
-            'data_type' => 'nullable|string|in:string,date,integer',
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
         ]);
 
-        // Create placeholder
-        Placeholder::create($validated);
+        $placeholder = new Placeholder();
+        $placeholder->name = $request->name;
+        $placeholder->description = $request->description;
+        $placeholder->save();
 
-        return redirect()->route('email-templates.admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_created'));
+        return redirect()->route('admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_created'));
     }
 
-    /**
-     * Show the form for editing the specified placeholder.
-     */
-    public function edit(Placeholder $placeholder)
+    public function edit(Request $request, $id)
     {
+        $placeholder = Placeholder::findOrFail($id);
         return view('email-templates::admin.placeholders.edit', compact('placeholder'));
     }
 
-    /**
-     * Update the specified placeholder in storage.
-     */
-    public function update(Request $request, Placeholder $placeholder)
+    public function update(Request $request, $id)
     {
-        // Validate input
-        $validated = $request->validate([
-            'description' => 'nullable|string',
-            'data_type' => 'nullable|string|in:string,date,integer',
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
         ]);
 
-        // Update placeholder
-        $placeholder->update($validated);
+        $placeholder = Placeholder::findOrFail($id);
+        $placeholder->name = $request->name;
+        $placeholder->description = $request->description;
+        $placeholder->save();
 
-        return redirect()->route('email-templates.admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_updated'));
+        return redirect()->route('admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_updated'));
     }
 
-    /**
-     * Remove the specified placeholder from storage.
-     */
-    public function destroy(Placeholder $placeholder)
+    public function destroy($id)
     {
-        // Detach from templates first to maintain referential integrity
-        $placeholder->templates()->detach();
+        $placeholder = Placeholder::findOrFail($id);
         $placeholder->delete();
-
-        return redirect()->route('email-templates.admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_deleted'));
+        return redirect()->route('admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_deleted'));
     }
 }

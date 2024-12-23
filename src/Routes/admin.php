@@ -5,9 +5,22 @@ use Codersgarden\MultiLangMailer\Controller\Admin\TemplateController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'admin/email-templates', 'middleware' => ['web', 'auth']], function () {
-    // Template Routes
-    Route::resource('templates', TemplateController::class)->names('email-templates.admin.templates');
 
-    // Placeholder Routes
-    Route::resource('placeholders', PlaceholderController::class)->names('email-templates.admin.placeholders');
+    Route::controller(PlaceholderController::class)->prefix('placeholders')->group(function () {
+        Route::get('/', 'index')->name('admin.placeholders.index');
+        Route::get('/create', 'create')->name('admin.placeholders.create');
+        Route::post('/', 'store')->name('admin.placeholders.store');
+        Route::get('/{id}', 'edit')->name('admin.placeholders.edit');
+        Route::put('/{id}', 'update')->name('admin.placeholders.update');
+        Route::delete('/{id}', 'destroy')->name('admin.placeholders.destroy');
+    });
+
+    Route::controller(TemplateController::class)->prefix('templates')->group(function () {
+        Route::get('/', 'index')->name('admin.templates.index');
+        Route::get('/create', 'create')->name('admin.templates.create');
+        Route::post('/', 'store')->name('admin.templates.store');
+        Route::get('/{id}', 'edit')->name('admin.templates.edit');
+        Route::put('/{id}', 'update')->name('admin.templates.update');
+        Route::delete('/{id}', 'destroy')->name('admin.templates.destroy');
+    });
 });
