@@ -2,7 +2,7 @@
 
 namespace Codersgarden\MultiLangMailer\Services;
 
-use Codersgarden\MultiLangMailer\Modal\Placeholder;
+use Codersgarden\MultiLangMailer\Models\Placeholder;
 
 class PlaceholderService
 {

@@ -3,8 +3,8 @@
 namespace Codersgarden\MultiLangMailer\Controller\Admin;
 
 use Codersgarden\MultiLangMailer\Controller\Controller;
-use Codersgarden\MultiLangMailer\Modal\Placeholder;
-use Codersgarden\MultiLangMailer\Modal\Template;
+use Codersgarden\MultiLangMailer\Models\Placeholder;
+use Codersgarden\MultiLangMailer\Models\Template;
 use Illuminate\Support\Facades\Request;
 
 class TemplateController extends Controller

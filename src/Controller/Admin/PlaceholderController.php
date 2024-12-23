@@ -3,7 +3,7 @@
 namespace Codersgarden\MultiLangMailer\Controller\Admin;
 
 use Codersgarden\MultiLangMailer\Controller\Controller;
-use Codersgarden\MultiLangMailer\Modal\Placeholder;
+use Codersgarden\MultiLangMailer\Models\Placeholder;
 use Illuminate\Http\Request;
 
 class PlaceholderController extends Controller

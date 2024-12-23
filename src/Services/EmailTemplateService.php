@@ -3,7 +3,7 @@
 namespace Codersgarden\MultiLangMailer\Services;
 
 use Codersgarden\MultiLangMailer\Mail\DynamicEmail;
-use Codersgarden\MultiLangMailer\Modal\Template;
+use Codersgarden\MultiLangMailer\Models\Template;
 use Illuminate\Support\Facades\Mail;
 
 class EmailTemplateService

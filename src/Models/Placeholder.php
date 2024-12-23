@@ -1,6 +1,6 @@
 <?php
 
-namespace Codersgarden\MultiLangMailer\Modal;
+namespace Codersgarden\MultiLangMailer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
