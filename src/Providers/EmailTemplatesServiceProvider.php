@@ -22,27 +22,34 @@ class EmailTemplatesServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'email-templates');
 
         // Load translations
-        $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'email-templates');
+        if (is_dir(__DIR__ . '/../Resources/lang')) {
+            $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'email-templates');
+        }
 
         // Load migrations
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        if (is_dir(__DIR__ . '/../database/migrations')) {
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        }
 
-        // Publish assets
+        // Publish migrations
         $this->publishes([
-            __DIR__ . '/../../database/migrations/' => database_path('migrations'),
-        ], 'migrations');
+            __DIR__ . '/../database/migrations/' => database_path('migrations'),
+        ], 'email-templates-migrations');
+
 
         $this->publishes([
             __DIR__ . '/../Resources/views' => resource_path('views/vendor/email-templates'),
-        ], 'views');
+        ], 'email-templates-views');
+
+        if (is_dir(__DIR__ . '/../Resources/lang')) {
+            $this->publishes([
+                __DIR__ . '/../Resources/lang' => resource_path('lang/vendor/email-templates'),
+            ], 'email-templates-lang');
+        }
 
         $this->publishes([
-            __DIR__ . '/../Resources/lang' => resource_path('lang/vendor/email-templates'),
-        ], 'lang');
-
-        $this->publishes([
-            __DIR__ . '/../config/email-templates.php' => config_path('email-templates.php'),
-        ], 'config');
+            __DIR__ . '/../Config/email-templates.php' => config_path('email-templates.php'),
+        ], 'email-templates-config');
     }
 
     /**
@@ -64,7 +71,7 @@ class EmailTemplatesServiceProvider extends ServiceProvider
             return $app->make(EmailTemplateService::class);
         });
 
-        $this->app->singleton(PlaceholderService::class, function ($app) {
+        $this->app->singleton(PlaceholderService::class, function () {
             return new PlaceholderService();
         });
     }
