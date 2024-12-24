@@ -4,7 +4,7 @@ namespace Codersgarden\MultiLangMailer\Controller\Admin;
 
 use Codersgarden\MultiLangMailer\Controller\Controller;
 use Codersgarden\MultiLangMailer\Models\Placeholder;
-use Codersgarden\MultiLangMailer\Models\MailTemplate;
+use Codersgarden\MultiLangMailer\Models\DMailTemplate;
 use Illuminate\Support\Facades\Request;
 
 class TemplateController extends Controller
@@ -15,7 +15,7 @@ class TemplateController extends Controller
     public function index()
     {
         // Execute the query
-        $templates = MailTemplate::all();
+        $templates = DMailTemplate::all();
         return view('email-templates::admin.templates.index', compact('templates'));
     }
 
@@ -47,7 +47,7 @@ class TemplateController extends Controller
         ]);
 
         // Create template
-        $template = MailTemplate::create(['identifier' => $validated['identifier']]);
+        $template = DMailTemplate::create(['identifier' => $validated['identifier']]);
 
         // Attach placeholders
         if (isset($validated['placeholders'])) {
@@ -69,7 +69,7 @@ class TemplateController extends Controller
     /**
      * Show the form for editing the specified template.
      */
-    public function edit(MailTemplate $template)
+    public function edit(DMailTemplate $template)
     {
         $locales = config('app.locales', ['en']);
         $availablePlaceholders = Placeholder::all();
@@ -80,7 +80,7 @@ class TemplateController extends Controller
     /**
      * Update the specified template in storage.
      */
-    public function update(Request $request, MailTemplate $template)
+    public function update(Request $request, DMailTemplate $template)
     {
         $locales = config('app.locales', ['en']);
 
@@ -114,7 +114,7 @@ class TemplateController extends Controller
     /**
      * Remove the specified template from storage.
      */
-    public function destroy(MailTemplate $template)
+    public function destroy(DMailTemplate $template)
     {
         $template->delete();
         return redirect()->route('email-templates.admin.templates.index')->with('success', __('email-templates::messages.template_deleted'));

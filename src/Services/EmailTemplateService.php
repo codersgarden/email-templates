@@ -26,7 +26,7 @@ class EmailTemplateService
     public function sendEmail(string $identifier, array $data = [], string $locale = null)
     {
         $locale = $locale ?: app()->getLocale();
-        $template = MailTemplate::where('identifier', $identifier)->firstOrFail();
+        $template = DMailTemplate::where('identifier', $identifier)->firstOrFail();
         $translation = $template->translation($locale);
 
         if (!$translation) {
