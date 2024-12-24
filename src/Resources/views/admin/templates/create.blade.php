@@ -16,7 +16,7 @@
             </div>
         @endif
 
-        <form action="{{ route('email-templates.admin.templates.store') }}" method="POST">
+        <form action="{{ route('admin.templates.store') }}" method="POST">
             @csrf
             <div class="form-group">
                 <label for="identifier">{{ __('email-templates::messages.identifier') }}</label>
@@ -55,7 +55,7 @@
                             <small class="form-text text-muted">
                                 {{ __('email-templates::messages.available_placeholders') }}:
                                 @foreach ($availablePlaceholders as $placeholder)
-                                    <code>{{ '{{' }}{{ $placeholder->name }}{{ ' ?>' }}' }}</code>
+                                    <code> '{{ ' ?>' }}{{ $placeholder->name }}{{ ' ?>' }}'</code>
                                     @if (!$loop->last)
                                         ,
                                     @endif
@@ -67,7 +67,7 @@
             @endforeach
 
             <button type="submit" class="btn btn-success">{{ __('email-templates::messages.save') }}</button>
-            <a href="{{ route('email-templates.admin.templates.index') }}"
+            <a href="{{ route('admin.templates.index') }}"
                 class="btn btn-secondary">{{ __('email-templates::messages.cancel') }}</a>
         </form>
     </div>

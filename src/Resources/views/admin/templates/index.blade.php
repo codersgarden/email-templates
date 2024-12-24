@@ -5,7 +5,7 @@
 @section('content')
     <div class="container mt-4">
         <h1>{{ __('email-templates::messages.email_templates') }}</h1>
-        <a href="{{ route('email-templates.admin.templates.create') }}" class="btn btn-primary mb-3">
+        <a href="{{ route('admin.templates.create') }}" class="btn btn-primary mb-3">
             {{ __('email-templates::messages.create_template') }}
         </a>
 
@@ -32,12 +32,11 @@
                             <td>{{ strtoupper($translation->locale) }}</td>
                             <td>{{ Str::limit($translation->subject, 50) }}</td>
                             <td>
-                                <a href="{{ route('email-templates.admin.templates.edit', $template->id) }}"
-                                    class="btn btn-sm btn-warning">
+                                <a href="{{ route('admin.templates.edit', $template->id) }}" class="btn btn-sm btn-warning">
                                     {{ __('email-templates::messages.edit') }}
                                 </a>
-                                <form action="{{ route('email-templates.admin.templates.destroy', $template->id) }}"
-                                    method="POST" class="d-inline-block"
+                                <form action="{{ route('admin.templates.destroy', $template->id) }}" method="POST"
+                                    class="d-inline-block"
                                     onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
                                     @csrf
                                     @method('DELETE')

@@ -14,6 +14,7 @@ class TemplateController extends Controller
      */
     public function index()
     {
+        // Execute the query
         $templates = MailTemplate::all();
         return view('email-templates::admin.templates.index', compact('templates'));
     }
