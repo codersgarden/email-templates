@@ -20,24 +20,28 @@
             @csrf
             <div class="form-group">
                 <label for="identifier">{{ __('email-templates::messages.identifier') }}</label>
-                <input type="text" name="identifier" id="identifier" class="form-control" required>
+                <input type="text" name="identifier" id="identifier" class="form-control">
                 <small class="form-text text-muted">{{ __('email-templates::messages.identifier_help') }}</small>
             </div>
 
             <div class="form-group">
                 <label for="placeholders">{{ __('email-templates::messages.select_placeholders') }}</label>
-                <select name="placeholders[]" id="placeholders" class="form-control" multiple>
+                <select class="form-select" name="placeholders[]" id="placeholders" aria-label="Default select example"
+                    multiple="multiple">
                     @foreach ($availablePlaceholders as $placeholder)
-                        <option value="{{ $placeholder->id }}">{{ $placeholder->name }} - {{ $placeholder->description }}
+                        <option value="{{ $placeholder->id }}">
+                            {{ $placeholder->name }}
                         </option>
                     @endforeach
                 </select>
+
                 <small class="form-text text-muted">{{ __('email-templates::messages.select_placeholders_help') }}</small>
             </div>
 
             @foreach ($locales as $locale)
                 <div class="card mb-3">
                     <div class="card-header">
+                        <input type="hidden" name="translation[{{ $locale }}]" value="{{ $locale }}">
                         {{ strtoupper($locale) }} {{ __('email-templates::messages.translation') }}
                     </div>
                     <div class="card-body">
@@ -45,22 +49,16 @@
                             <label
                                 for="translations[{{ $locale }}][subject]">{{ __('email-templates::messages.subject') }}</label>
                             <input type="text" name="translations[{{ $locale }}][subject]"
-                                id="translations[{{ $locale }}][subject]" class="form-control" required>
+                                id="translations[{{ $locale }}][subject]" class="form-control">
                         </div>
                         <div class="form-group">
                             <label
                                 for="translations[{{ $locale }}][body]">{{ __('email-templates::messages.body') }}</label>
-                            <textarea name="translations[{{ $locale }}][body]" id="translations[{{ $locale }}][body]"
-                                class="form-control rich-text-editor" rows="5" required></textarea>
-                            <small class="form-text text-muted">
-                                {{ __('email-templates::messages.available_placeholders') }}:
-                                @foreach ($availablePlaceholders as $placeholder)
-                                    <code> '{{ ' ?>' }}{{ $placeholder->name }}{{ ' ?>' }}'</code>
-                                    @if (!$loop->last)
-                                        ,
-                                    @endif
-                                @endforeach
-                            </small>
+                            {{-- <textarea name="translations[{{ $locale }}][body]" id="translations[{{ $locale }}][body]"
+                                class="form-control rich-text-editor" rows="5"></textarea> --}}
+                            <textarea name="translations[{{ $locale }}][body]" id="translations[{{ $locale }}][body]" hidden></textarea>
+                            <div id="content" rows="5">{!! old('translations[{{ $locale }}][body]') !!}</div>
+
                         </div>
                     </div>
                 </div>
@@ -74,11 +72,24 @@
 @endsection
 
 @section('scripts')
-    <!-- Include CKEditor or any other rich text editor if desired -->
-    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+   
     <script>
-        document.querySelectorAll('.rich-text-editor').forEach((textarea) => {
-            CKEDITOR.replace(textarea.id);
+        document.querySelectorAll('textarea').forEach((textarea) => {
+            if (textarea.id.startsWith('translations')) {
+                const quillContainer = document.createElement('div');
+                quillContainer.style.height = '200px'; // Set height for consistency
+                textarea.insertAdjacentElement('beforebegin', quillContainer);
+                textarea.style.display = 'none'; // Hide the textarea
+
+                const quill = new Quill(quillContainer, {
+                    theme: 'snow',
+                });
+
+                // Sync Quill content back to the hidden textarea
+                quill.on('text-change', function() {
+                    textarea.value = quill.root.innerHTML;
+                });
+            }
         });
     </script>
 @endsection

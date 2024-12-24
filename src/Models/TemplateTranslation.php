@@ -10,6 +10,6 @@ class TemplateTranslation extends Model
 
     public function template()
     {
-        return $this->belongsTo(DMailTemplate::class);
+        return $this->belongsTo(MailTemplate::class);
     }
 }

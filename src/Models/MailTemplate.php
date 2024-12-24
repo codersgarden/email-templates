@@ -4,7 +4,7 @@ namespace Codersgarden\MultiLangMailer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DMailTemplate extends Model
+class MailTemplate extends Model
 {
 
     protected $table = 'mail_templates';
