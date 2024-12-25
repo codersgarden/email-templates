@@ -59,10 +59,10 @@ class PlaceholderController extends Controller
         return redirect()->route('admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_updated'));
     }
 
-    public function destroy($id)
-    {
-        $placeholder = Placeholder::findOrFail($id);
-        $placeholder->delete();
-        return redirect()->route('admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_deleted'));
-    }
+    // public function destroy($id)
+    // {
+    //     $placeholder = Placeholder::findOrFail($id);
+    //     $placeholder->delete();
+    //     return redirect()->route('admin.placeholders.index')->with('success', __('email-templates::messages.placeholder_deleted'));
+    // }
 }

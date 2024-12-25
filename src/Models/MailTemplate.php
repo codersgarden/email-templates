@@ -19,4 +19,8 @@ class MailTemplate extends Model
         $locale = $locale ?: app()->getLocale();
         return $this->translations()->where('locale', $locale)->first();
     }
+    public function placeholders()
+    {
+        return $this->belongsToMany(Placeholder::class, 'placeholder_template');
+    }
 }

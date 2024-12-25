@@ -36,7 +36,7 @@
                                 {{ __('email-templates::messages.edit') }}
                             </a>
 
-                            <form action="{{ route('admin.placeholders.destroy', $placeholder->id) }}" method="POST"
+                            {{-- <form action="{{ route('admin.placeholders.destroy', $placeholder->id) }}" method="POST"
                                 class="d-inline-block"
                                 onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
                                 @csrf
@@ -44,7 +44,7 @@
                                 <button type="submit" class="btn btn-sm btn-danger">
                                     {{ __('email-templates::messages.delete') }}
                                 </button>
-                            </form>
+                            </form> --}}
                         </td>
                     </tr>
                 @empty
