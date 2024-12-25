@@ -19,34 +19,29 @@
             <thead class="thead-dark">
                 <tr>
                     <th>{{ __('email-templates::messages.identifier') }}</th>
-                    <th>{{ __('email-templates::messages.locale') }}</th>
-                    <th>{{ __('email-templates::messages.subject') }}</th>
                     <th>{{ __('email-templates::messages.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($templates as $template)
-                    @foreach ($template->translations as $translation)
-                        <tr>
-                            <td>{{ $template->identifier }}</td>
-                            <td>{{ strtoupper($translation->locale) }}</td>
-                            <td>{{ Str::limit($translation->subject, 50) }}</td>
-                            <td>
-                                <a href="{{ route('admin.templates.edit', $template->id) }}" class="btn btn-sm btn-warning">
-                                    {{ __('email-templates::messages.edit') }}
-                                </a>
-                                <form action="{{ route('admin.templates.destroy', $template->id) }}" method="POST"
-                                    class="d-inline-block"
-                                    onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        {{ __('email-templates::messages.delete') }}
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
+                    <tr>
+                        <td>{{ $template->identifier }}</td>
+                        <td>
+                            <a href="{{ route('admin.templates.edit', $template->id) }}" class="btn btn-sm btn-warning">
+                                {{ __('email-templates::messages.edit') }}
+                            </a>
+
+                            <form action="{{ route('admin.templates.destroy', $template->id) }}" class="d-inline-block"
+                                method="POST"
+                                onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                    class="btn btn-sm btn-danger">{{ __('email-templates::messages.delete') }}</button>
+                            </form>
+
+                        </td>
+                    </tr>
                 @empty
                     <tr>
                         <td colspan="4" class="text-center">{{ __('email-templates::messages.no_templates_found') }}
@@ -56,4 +51,17 @@
             </tbody>
         </table>
     </div>
+@endsection
+
+
+@section('scripts')
+    <script>
+        document.querySelectorAll('form[onsubmit]').forEach((form) => {
+            form.addEventListener('submit', (e) => {
+                if (!confirm(form.getAttribute('onsubmit').replace('return ', '').slice(0, -1))) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
 @endsection

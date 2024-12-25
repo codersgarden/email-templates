@@ -18,9 +18,9 @@ Route::group(['prefix' => 'admin/email-templates', 'middleware' => ['web', 'auth
     Route::controller(TemplateController::class)->prefix('templates')->group(function () {
         Route::get('/', 'index')->name('admin.templates.index');
         Route::get('/create', 'create')->name('admin.templates.create');
-        Route::post('/', 'store')->name('admin.templates.store');
-        Route::get('/{id}', 'edit')->name('admin.templates.edit');
-        Route::post('/{id}', 'update')->name('admin.templates.update');
-        Route::delete('/{id}', 'destroy')->name('admin.templates.destroy');
+        Route::post('/store', 'store')->name('admin.templates.store');
+        Route::get('/edit/{id}', 'edit')->name('admin.templates.edit');
+        Route::put('/update/{id}', 'update')->name('admin.templates.update');
+        Route::delete('/destroy/{id}', 'destroy')->name('admin.templates.destroy');
     });
 });

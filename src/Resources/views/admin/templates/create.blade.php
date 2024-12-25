@@ -72,7 +72,7 @@
 @endsection
 
 @section('scripts')
-   
+
     <script>
         document.querySelectorAll('textarea').forEach((textarea) => {
             if (textarea.id.startsWith('translations')) {
