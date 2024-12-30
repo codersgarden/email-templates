@@ -13,6 +13,6 @@ class Placeholder extends Model
      */
     public function templates()
     {
-        return $this->belongsToMany(Template::class, 'placeholder_template');
+        return $this->belongsToMany(MailTemplate::class, 'placeholder_template');
     }
 }

@@ -12,7 +12,7 @@ Route::group(['prefix' => '/email-templates', 'middleware' => ['web', 'auth']], 
         Route::post('/', 'store')->name('admin.placeholders.store');
         Route::get('/{id}', 'edit')->name('admin.placeholders.edit');
         Route::post('/{id}', 'update')->name('admin.placeholders.update');
-        // Route::delete('/{id}', 'destroy')->name('admin.placeholders.destroy');
+        Route::delete('/{id}', 'destroy')->name('admin.placeholders.destroy');
     });
 
     Route::controller(TemplateController::class)->prefix('templates')->group(function () {

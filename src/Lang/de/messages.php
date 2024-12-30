@@ -23,7 +23,6 @@ return [
     'placeholder_deleted' => 'Placeholder deleted successfully.',
     'name' => 'Name',
     'description' => 'Description',
-    'data_type' => 'Data Type',
     'confirm_delete_placeholder' => 'Are you sure you want to delete this placeholder?',
     'no_templates_found' => 'No templates found.',
     'no_placeholders_found' => 'No placeholders found.',
@@ -33,4 +32,15 @@ return [
     'select_placeholders_help' => 'Choose the placeholders applicable to this template.',
     'available_placeholders' => 'Available Placeholders',
     'translation' => 'Translation',
+
+    'placeholder' => [
+        'name' => 'Name',
+        'create' => 'Platzhalter hinzufügen',
+    ],
+
+    'input_placeholder' => [
+        'data_type' => 'Data Type',
+        'name' => 'Geben Sie einen Platzhalternamen ein',
+        'description' => 'Schreiben Sie hier...',
+    ],
 ];

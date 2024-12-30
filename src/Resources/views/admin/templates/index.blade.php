@@ -3,11 +3,17 @@
 @extends('email-templates::layouts.admin')
 
 @section('content')
-    <div class="container mt-4">
-        <h1>{{ __('email-templates::messages.email_templates') }}</h1>
-        <a href="{{ route('admin.templates.create') }}" class="btn btn-primary mb-3">
-            {{ __('email-templates::messages.create_template') }}
-        </a>
+    <div class="">
+        <div class="d-flex justify-content-between m-4 mb-2">
+            <div class="d-flex justify-content-start">
+                <h2 class="text-uppercase fw-semi-bold">{{ __('email-templates::messages.email_templates') }}</h2>
+            </div>
+            <div class="d-flex justify-content-end">
+                <a href="{{ route('admin.templates.create') }}" class="btn btn-dark mb-3">
+                    {{ __('email-templates::messages.create_template') }}
+                </a>
+            </div>
+        </div>
 
         @if (session('success'))
             <div class="alert alert-success">
@@ -15,29 +21,30 @@
             </div>
         @endif
 
-        <table class="table table-striped table-bordered">
+        <table class="table table-light">
             <thead class="thead-dark">
-                <tr>
-                    <th>{{ __('email-templates::messages.identifier') }}</th>
-                    <th>{{ __('email-templates::messages.actions') }}</th>
+                <tr class="text-start">
+                    <th class="ps-4">{{ __('email-templates::messages.identifier') }}</th>
+                    <th width="15%" class="text-center ">{{ __('email-templates::messages.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($templates as $template)
                     <tr>
-                        <td>{{ $template->identifier }}</td>
-                        <td>
-                            <a href="{{ route('admin.templates.edit', $template->id) }}" class="btn btn-sm btn-warning">
-                                {{ __('email-templates::messages.edit') }}
+                        <td class="ps-4 align-middle">{{ $template->identifier }}</td>
+                        <td class="text-center">
+                            <a href="{{ route('admin.templates.edit', $template->id) }}"
+                                class="text-dark decoration-none btn btn-ghost">
+                                <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-
                             <form action="{{ route('admin.templates.destroy', $template->id) }}" class="d-inline-block"
                                 method="POST"
                                 onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
-                                    class="btn btn-sm btn-danger">{{ __('email-templates::messages.delete') }}</button>
+                                <button type="submit" class="btn btn-ghost text-dark">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
                             </form>
 
                         </td>

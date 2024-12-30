@@ -1,4 +1,7 @@
 <?php
+
+use Codersgarden\MultiLangMailer\Models\Placeholder;
+
 return [
     'email_templates' => 'Email Templates',
     'placeholders' => 'Placeholders',
@@ -23,7 +26,6 @@ return [
     'placeholder_deleted' => 'Placeholder deleted successfully.',
     'name' => 'Name',
     'description' => 'Description',
-    'data_type' => 'Data Type',
     'confirm_delete_placeholder' => 'Are you sure you want to delete this placeholder?',
     'no_templates_found' => 'No templates found.',
     'no_placeholders_found' => 'No placeholders found.',
@@ -33,4 +35,16 @@ return [
     'select_placeholders_help' => 'Choose the placeholders applicable to this template.',
     'available_placeholders' => 'Available Placeholders',
     'translation' => 'Translation',
+
+    'placeholder' => [
+        'name' => 'Name',
+        'create' => 'Add Placeholder',
+        'data_type' => 'Data Type',
+    ],
+
+    'input_placeholder' => [
+        'data_type' => 'Select Data Type',
+        'name' => 'Enter Placeholder Name',
+        'description' => 'Write here...',
+    ],
 ];

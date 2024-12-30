@@ -1,4 +1,4 @@
-@extends('email-templates::layouts.admin');
+@extends('email-templates::layouts.admin')
 
 @section('content')
     <div class="container mt-4">
@@ -37,4 +37,4 @@
                 class="btn btn-secondary">{{ __('email-templates::messages.cancel') }}</a>
         </form>
     </div>
-@endsection;
+@endsection
