@@ -28,4 +28,48 @@
 </script>
 <script src="https://kit.fontawesome.com/9abc1ff96d.js" crossorigin="anonymous"></script>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Event listener for delete buttons
+        const deleteButtons = document.querySelectorAll('#deleteButton');
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const templateId = this.dataset.templateId;
+                const form = this.closest('form');
+
+                // SweetAlert confirmation for deletion
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'This email template will be deleted permanently.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#1f88c0',
+                    cancelButtonColor: '#c0513a',
+                    background: '#f9f9f9',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show success message
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'The email template has been deleted successfully.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        // Submit the form after 2 seconds
+                        setTimeout(() => {
+                            form.submit();
+                        }, 2000);
+                    }
+                });
+            });
+        });
+    });
+</script>
+
 </html>

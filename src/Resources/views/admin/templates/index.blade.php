@@ -37,16 +37,17 @@
                                 class="text-dark decoration-none btn btn-ghost">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <form action="{{ route('admin.templates.destroy', $template->id) }}" class="d-inline-block"
-                                method="POST"
-                                onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
+                          
+                            <form action="{{ route('admin.templates.destroy', $template->id) }}" method="post"
+                                class="d-inline delete-role-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-ghost text-dark">
+                                <button type="button" class="btn btn-sm" id="deleteButton"
+                                    title="Delete Role" data-delete-type="permission">
                                     <i class="fa-solid fa-trash"></i>
+
                                 </button>
                             </form>
-
                         </td>
                     </tr>
                 @empty

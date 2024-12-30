@@ -40,7 +40,7 @@ class TemplateController extends Controller
 
         // Validate input
         $validated = $request->validate([
-            'identifier' => 'required|unique:mail_templates,identifier',
+            'identifier' => 'required|email|unique:mail_templates,identifier',
             'translations' => 'array',
             'translations.*.subject' => 'string',
             'translations.*.body' => 'string',
