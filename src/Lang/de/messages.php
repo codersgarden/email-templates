@@ -10,7 +10,7 @@ return [
     'template_deleted' => 'Template deleted successfully.',
     'identifier' => 'Identifier',
     'subject' => 'Subject',
-    'body' => 'Body',
+    'body' => 'Description',
     'actions' => 'Actions',
     'edit' => 'Edit',
     'delete' => 'Delete',
@@ -36,6 +36,7 @@ return [
     'placeholder' => [
         'name' => 'Name',
         'create' => 'Platzhalter hinzufügen',
+        'save' => 'Speichern',
     ],
 
     'input_placeholder' => [

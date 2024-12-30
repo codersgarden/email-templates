@@ -58,6 +58,8 @@
             </tbody>
         </table>
     </div>
+
+    @include('email-templates::layouts.pagination', ['paginator' => $templates])
 @endsection
 
 

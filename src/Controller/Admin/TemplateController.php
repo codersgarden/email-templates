@@ -18,7 +18,7 @@ class TemplateController extends Controller
     public function index()
     {
         // Execute the query
-        $templates = MailTemplate::all();
+        $templates = MailTemplate::orderBy('id', 'desc')->paginate(2);
         return view('email-templates::admin.templates.index', compact('templates'));
     }
 

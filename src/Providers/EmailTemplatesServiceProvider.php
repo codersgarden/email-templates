@@ -30,6 +30,7 @@ class EmailTemplatesServiceProvider extends ServiceProvider
         $this->serveStaticFile('back-icon', '/../Resources/images/back-icon.svg');
         $this->serveStaticFile('logout-icon', '/../Resources/images/logout-icon.svg');
         $this->serveStaticFile('close-icon', '/../Resources/images/close-icon.svg');
+        $this->serveStaticFile('pervious-icon', '/../Resources/images/Vector.png');
         // $this->serveStaticFile('fonts', '/../Resources/fonts/Jost-VariableFont_wght.ttf');
 
         // Load translations
