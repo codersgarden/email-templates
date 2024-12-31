@@ -1,18 +1,22 @@
 @extends('email-templates::layouts.admin')
 
 @section('content')
-    <div class="">
-        <div class="d-flex justify-content-between m-4 align-items-center ms-lg-5 me-lg-5 ms-md-0 me-md-0 ms-sm-0 me-sm-0">
-            <div class="d-flex justify-content-start">
-                <h2 class="text-uppercase fw-semi-bold">{{ __('email-templates::messages.placeholders') }}</h2>
-            </div>
-            <div class="d-flex justify-content-end">
-                <button class="btn btn-dark mb-3 create-placeholder-btn" type="button" data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                    {{ __('email-templates::messages.create_placeholder') }}
-                </button>
-            </div>
+
+
+<div class="content bg-color">
+    <div class="d-flex justify-content-between align-items-center ms-lg-5 me-lg-5 ms-md-0 me-md-0 ms-sm-0 me-sm-0">
+        <p class="title pt-3 text-uppercase">{{ __('email-templates::messages.placeholders') }}</p>
+
+        <div class="d-flex align-items-center ms-auto">
+            <button class="br-11 new_template btn btn-dark ms-3 create-placeholder-btn" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+            {{ __('email-templates::messages.create_placeholder') }}
+        </button>
+
         </div>
+    </div>
+</div>
+   
 
         @if (session('success'))
             <div class="alert alert-success" id="success-alert">
@@ -35,7 +39,7 @@
             </script>
         @endif
 
-        <table class="table table-light">
+        <table class="table table-light table-responsive">
             <thead class="thead-dark">
                 <tr class="text-start">
                     <th class="ps-4">{{ __('email-templates::messages.name') }}</th>
@@ -72,7 +76,7 @@
 
 
         @include('email-templates::layouts.pagination', ['paginator' => $placeholders])
-    </div>
+   
 
     <div class="offcanvas offcanvas-end {{ $errors->any() ? 'show' : '' }}" tabindex="-1" id="offcanvasRight"
         data-bs-backdrop="static" aria-labelledby="offcanvasRightLabel"
