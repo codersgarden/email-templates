@@ -27,7 +27,7 @@ class PlaceholderService
 
         // Optionally remove any undefined placeholders
         $text = preg_replace('/{{\s*\w+\s*}}/', '', $text);
-
+      
         return $text;
     }
 }

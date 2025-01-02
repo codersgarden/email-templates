@@ -142,7 +142,9 @@ body {
   }
 
   .nav-link {
-    color: rgba(0, 0, 0, 0.5) !important;
+    color: black;
+    font-weight: 400;
+    font-size: 18px;
 }
 
 /* For active tab, set black color with full opacity */

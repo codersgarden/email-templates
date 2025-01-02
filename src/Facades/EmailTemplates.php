@@ -8,6 +8,6 @@ class EmailTemplates extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'email-template-service';
+        return EmailTemplateService::class;
     }
 }

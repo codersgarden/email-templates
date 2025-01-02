@@ -68,10 +68,7 @@ class EmailTemplatesServiceProvider extends ServiceProvider
             return new EmailTemplateService($app->make(PlaceholderService::class));
         });
 
-        $this->app->singleton(EmailTemplateService::class, function ($app) {
-            return $app->make(EmailTemplateService::class);
-        });
-
+       
         $this->app->singleton(PlaceholderService::class, function () {
             return new PlaceholderService();
         });
