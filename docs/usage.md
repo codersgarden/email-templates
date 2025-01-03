@@ -15,9 +15,7 @@ Here’s a basic example of using the package in a Laravel controller to send an
 ```php
 class TestController extends Controller
 {
-
-
-        public function sendMail()
+    public function sendMail()
     {
         // Email template identifier (use the template name)
         $identifier = "welcome_mail";

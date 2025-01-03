@@ -6,12 +6,12 @@ Welcome to the `EmailTemplates` Laravel Package Documentation. This package simp
 
 
 
-# Features
+## Features
 
-Easily manage email templates in multiple languages from the database.
-Simple, intuitive interface for creating, editing, and managing email templates.
-Fully supports CRUD (Create, Read, Update, Delete) operations on email templates.
-Templates are stored in the database, making them easy to edit and update without deploying code changes.
+- Easily manage email templates in multiple languages from the database.
+- Simple, intuitive interface for creating, editing, and managing email templates.
+- Fully supports CRUD (Create, Read, Update, Delete) operations on email templates.
+- Templates are stored in the database, making them easy to edit and update without deploying code changes.
 
 ---
 
@@ -21,15 +21,14 @@ Templates are stored in the database, making them easy to edit and update withou
 ### Getting Started
 
 - [Getting Started](docs/getting-started.md)
-Step-by-step instructions for installing and configuring the `EmailTemplates` package in your Laravel application.
+  Step-by-step instructions for installing and configuring the `EmailTemplates` package in your Laravel application.
 
 ---
 
 ### Usage
 
 - [Usage](docs/usage.md)  
-
-Detailed examples and guidelines for performing various operations using the package.
+  Detailed examples and guidelines for performing various operations using the package.
 
 ---
 
