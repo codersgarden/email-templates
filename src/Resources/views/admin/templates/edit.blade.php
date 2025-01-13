@@ -16,11 +16,11 @@
 
         <!-- Centered Form -->
         <div class="container mt-5">
-
             <form action="{{ route('admin.templates.update', $template->id) }}" method="POST"
-                class="mx-auto rounded col-md-6">
+                class="mx-auto rounded col-md-6" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
                 <div class="mb-3">
                     <!-- Tab Navigation -->
                     <ul class="nav nav-tabs" role="tablist">
@@ -54,7 +54,7 @@
                                 <label for="identifier"
                                     class="form-label">{{ __('email-templates::messages.identifier') }}</label>
                                 <input type="text" name="identifier" id="identifier" class="form-control"
-                                value="{{ old('identifier', $template->identifier) }}">
+                                    value="{{ old('identifier', $template->identifier) }}">
                                 @error('identifier')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -65,19 +65,67 @@
                             <div class="form-group">
                                 <label for="placeholders"
                                     class="form-label mt-2">{{ __('email-templates::messages.select_placeholders') }}</label>
-                                    <select class="form-select" name="placeholders[]" id="placeholders" multiple>
-                                        @foreach ($availablePlaceholders as $placeholder)
-                                            <option value="{{ $placeholder->id }}"
-                                                @if (in_array($placeholder->id, old('placeholders', $selectedPlaceholders))) selected @endif>
-                                                {{ $placeholder->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                <select class="form-select" name="placeholders[]" id="placeholders" multiple>
+                                    @foreach ($availablePlaceholders as $placeholder)
+                                        <option value="{{ $placeholder->id }}"
+                                            @if (in_array($placeholder->id, old('placeholders', $selectedPlaceholders))) selected @endif>
+                                            {{ $placeholder->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 @error('placeholders')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                                 <small
                                     class="form-text text-muted">{{ __('email-templates::messages.select_placeholders_help') }}</small>
+                            </div>
+
+                            <!-- File Section -->
+                            <div class="form-group">
+                                <label for="file" class="form-label mt-2">Attachment</label>
+                                <input type="file" name="files[]" id="files" class="form-control" multiple>
+
+
+                                @if ($template->file)
+                                <div class="mt-2">
+                                    @php
+                                        // Split the comma-separated string into an array
+                                        $files = explode(',', $template->file);
+                                    @endphp
+                            
+                                    @if (count($files) > 0)
+                                        @foreach ($files as $file)
+                                            @php
+                                                $filePath = asset('storage/images/' . $file);
+                                                $fileName = pathinfo($file, PATHINFO_FILENAME);
+                                                $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
+                                            @endphp
+                            
+                                            
+                                            @if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']))
+                                                <div class="mt-2">
+                                                    <img src="{{ $filePath }}" alt="File Preview" class="img-fluid" width="150px" height="150px" />
+                                                </div>
+                                            @elseif (strtolower($fileExtension) === 'pdf')
+                                                <div class="mt-2">
+                                                    {{ $fileName }}.{{ $fileExtension }}
+                                                    <a href="{{ $filePath }}" target="_blank" class="">View PDF</a>
+                                                </div>
+                                            @else
+                                                <div class="mt-2">
+                                                    <a href="{{ $filePath }}" target="_blank" class="">View File</a>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @else
+                                        <p>No valid files available.</p>
+                                    @endif
+                                </div>
+                            @endif
+                            
+                                @error('file')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
@@ -117,6 +165,7 @@
                         @endforeach
                     </div>
                 </div>
+
                 <button type="submit"
                     class="btn btn-dark fs-5">{{ __('email-templates::messages.placeholder.save') }}</button>
             </form>
@@ -126,23 +175,23 @@
 
 @section('scripts')
     <script>
-          document.querySelectorAll('.editor').forEach((editor, index) => {
-        const locale = editor.id.split('-')[1]; // Get locale from editor ID
-        const textarea = document.getElementById(`translations[${locale}][body]`);
-        const oldContent = textarea.value || ''; // Get the old content from textarea
+        document.querySelectorAll('.editor').forEach((editor, index) => {
+            const locale = editor.id.split('-')[1]; // Get locale from editor ID
+            const textarea = document.getElementById(`translations[${locale}][body]`);
+            const oldContent = textarea.value || ''; // Get the old content from textarea
 
-        // Initialize Quill editor with the old content
-        const quill = new Quill(`#content-${locale}`, {
-            theme: 'snow',
+            // Initialize Quill editor with the old content
+            const quill = new Quill(`#content-${locale}`, {
+                theme: 'snow',
+            });
+
+            // Set the content of the editor to the old value
+            quill.root.innerHTML = oldContent;
+
+            // Sync content of editor with the hidden textarea
+            quill.on('text-change', function() {
+                textarea.value = quill.root.innerHTML;
+            });
         });
-
-        // Set the content of the editor to the old value
-        quill.root.innerHTML = oldContent;
-
-        // Sync content of editor with the hidden textarea
-        quill.on('text-change', function() {
-            textarea.value = quill.root.innerHTML;
-        });
-    });
     </script>
 @endsection
