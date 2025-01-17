@@ -22,5 +22,6 @@ Route::group(['prefix' => '/email-templates', 'middleware' => ['web', 'auth']], 
         Route::get('/edit/{id}', 'edit')->name('admin.templates.edit');
         Route::put('/update/{id}', 'update')->name('admin.templates.update');
         Route::delete('/destroy/{id}', 'destroy')->name('admin.templates.destroy');
+        Route::post('/admin/templates/delete-file','deleteFile')->name('admin.templates.delete-file');
     });
 });

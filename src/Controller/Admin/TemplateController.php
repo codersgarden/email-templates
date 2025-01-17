@@ -9,6 +9,7 @@ use Codersgarden\MultiLangMailer\Models\TemplatePlaceholder;
 use Codersgarden\MultiLangMailer\Models\TemplateTranslation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateController extends Controller
 {
@@ -64,8 +65,6 @@ class TemplateController extends Controller
 
                 // dd($request->file('files'));
                 foreach ($request->file('files') as $file) {
-
-
                     $fileName = $file->getClientOriginalName(); // Get the original file name
                     $file->storeAs('images', $fileName, 'public'); // Store the file in the public disk
                     $fileNames[] = $fileName; // Store the file name in the array
@@ -75,7 +74,7 @@ class TemplateController extends Controller
             // Create template and store file path
             $template = MailTemplate::create([
                 'identifier' => $validated['identifier'],
-                'file' => implode(',',$fileNames),
+                'file' => implode(',', $fileNames),
             ]);
 
 
@@ -154,37 +153,29 @@ class TemplateController extends Controller
         ]);
 
         try {
-            // Fetch the template to update
             $template = MailTemplate::findOrFail($id);
 
             // Handle files upload
+            $filePaths = [];
+            if ($template->file) {
+                // Decode existing files from the database
+                $existingFiles = explode(',', $template->file);
+                $filePaths = array_filter($existingFiles); // Filter out empty values
+            }
+
             if ($request->hasFile('files')) {
-
-              
                 $uploadedFiles = $request->file('files');
-                $filePaths = [];
-
-                // Delete old files if they exist
-                if ($template->files) {
-                    $oldFiles = json_decode($template->files, true); // Decode the JSON array
-                    foreach ($oldFiles as $oldFile) {
-                        $oldFilePath = public_path('storage/images/' . $oldFile);
-                        if (file_exists($oldFilePath)) {
-                            unlink($oldFilePath); // Delete the old file
-                        }
-                    }
-                }
 
                 // Loop through each uploaded file and save them
                 foreach ($uploadedFiles as $file) {
                     $fileName = $file->getClientOriginalName();
                     $file->storeAs('images', $fileName, 'public'); // Store the file
-                    $filePaths[] = $fileName;
+                    $filePaths[] = $fileName; // Add new file to the list
                 }
-
-                // Update the files column in the database (stored as JSON)
-                $template->file = implode(',',$filePaths);
             }
+
+            // Update the files column in the database (stored as JSON)
+            $template->file = implode(',', $filePaths);
 
             // Update the template identifier
             $template->identifier = $validated['identifier'];
@@ -243,6 +234,42 @@ class TemplateController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return redirect()->route('admin.templates.index')->with('error', $e->getMessage());
+        }
+    }
+
+
+    public function deleteFile(Request $request)
+    {
+        $request->validate([
+            'file_name' => 'required|string',
+            'template_id' => 'required|integer|exists:mail_templates,id',
+        ]);
+
+        try {
+            // Fetch the template
+            $template = MailTemplate::findOrFail($request->template_id);
+
+            // Decode the stored files
+            $files = $template->file ? explode(',', $template->file) : [];
+
+            // Find and remove the file
+            if (in_array($request->file_name, $files)) {
+                $filePath = public_path('storage/images/' . $request->file_name);
+
+                // Delete the file from the filesystem
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+
+                // Remove the file from the array and update the database
+                $files = array_filter($files, fn($file) => $file !== $request->file_name);
+                $template->file = implode(',', $files);
+                $template->save();
+            }
+
+            return response()->json(['success' => true, 'message' => 'File deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 }

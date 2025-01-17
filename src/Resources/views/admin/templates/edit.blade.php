@@ -87,42 +87,58 @@
 
 
                                 @if ($template->file)
-                                <div class="mt-2">
-                                    @php
-                                        // Split the comma-separated string into an array
-                                        $files = explode(',', $template->file);
-                                    @endphp
-                            
-                                    @if (count($files) > 0)
-                                        @foreach ($files as $file)
-                                            @php
-                                                $filePath = asset('storage/images/' . $file);
-                                                $fileName = pathinfo($file, PATHINFO_FILENAME);
-                                                $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
-                                            @endphp
-                            
-                                            
-                                            @if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']))
-                                                <div class="mt-2">
-                                                    <img src="{{ $filePath }}" alt="File Preview" class="img-fluid" width="150px" height="150px" />
+                                    <div class="mt-2" id="file-list">
+                                        @php
+                                            // Split the comma-separated string into an array
+                                            $files = explode(',', $template->file);
+                                        @endphp
+
+                                        @if (count($files) > 0)
+                                            @foreach ($files as $file)
+                                                @php
+                                                    $filePath = asset('storage/images/' . $file);
+                                                    $fileName = pathinfo($file, PATHINFO_FILENAME);
+                                                    $fileExtension = pathinfo($file, PATHINFO_EXTENSION);
+                                                @endphp
+
+                                                <div class="mt-2 d-flex align-items-center justify-content-between"
+                                                    id="file-{{ $loop->index }}">
+                                                    <div class="d-flex align-items-center">
+                                                        @if (in_array(strtolower($fileExtension), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']))
+                                                            <div class="mt-2">
+                                                                <img src="{{ $filePath }}" alt="File Preview"
+                                                                    class="img-fluid" width="150px" height="150px" />
+                                                            </div>
+                                                        @elseif (strtolower($fileExtension) === 'pdf')
+                                                            <div class="mt-2">
+                                                                {{ $fileName }}.{{ $fileExtension }}
+                                                                <a href="{{ $filePath }}" target="_blank"
+                                                                    class="">View PDF</a>
+                                                            </div>
+                                                        @else
+                                                            <div class="mt-2">
+                                                                <a href="{{ $filePath }}" target="_blank"
+                                                                    class="">View File</a>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <!-- Delete Icon -->
+                                                    <button type="button"
+                                                        class="btn btn-link text-danger p-0 btn-delete-file"
+                                                        data-file="{{ $file }}"
+                                                        data-template-id="{{ $template->id }}"
+                                                        data-index="{{ $loop->index }}">
+                                                        <i class="bi bi-trash fs-4"></i>
+                                                    </button>
+
                                                 </div>
-                                            @elseif (strtolower($fileExtension) === 'pdf')
-                                                <div class="mt-2">
-                                                    {{ $fileName }}.{{ $fileExtension }}
-                                                    <a href="{{ $filePath }}" target="_blank" class="">View PDF</a>
-                                                </div>
-                                            @else
-                                                <div class="mt-2">
-                                                    <a href="{{ $filePath }}" target="_blank" class="">View File</a>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @else
-                                        <p>No valid files available.</p>
-                                    @endif
-                                </div>
-                            @endif
-                            
+                                            @endforeach
+                                        @else
+                                            <p>No valid files available.</p>
+                                        @endif
+                                    </div>
+                                @endif
+
                                 @error('file')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -191,6 +207,48 @@
             // Sync content of editor with the hidden textarea
             quill.on('text-change', function() {
                 textarea.value = quill.root.innerHTML;
+            });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.btn-delete-file');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const fileName = this.getAttribute('data-file');
+                    const templateId = this.getAttribute('data-template-id');
+                    const fileIndex = this.getAttribute('data-index');
+                    const fileElement = document.getElementById(`file-${fileIndex}`);
+
+                    if (confirm('Are you sure you want to delete this file?')) {
+                        fetch('{{ route('admin.templates.delete-file') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    file_name: fileName,
+                                    template_id: templateId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert(data.message);
+                                    // Remove the file from the DOM
+                                    fileElement.remove();
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while deleting the file.');
+                            });
+                    }
+                });
             });
         });
     </script>

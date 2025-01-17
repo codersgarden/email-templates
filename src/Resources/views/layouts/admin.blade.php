@@ -13,6 +13,7 @@
     </link>
     <link href="{{ url('email-templates/fonts/Jost-VariableFont_wght.ttf') }}">
     </link>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <title>@yield('title')</title>
 
 </head>
