@@ -19,24 +19,37 @@ class TestController extends Controller
 
         public function sendMail()
     {
-        // Email template identifier (use the template name)
-        $identifier = "welcome_mail";
+        $identifier = "register";
+        $locales = ["en", "de","fr"];
 
-        // Supported locales for the email (e.g., English, French, Spanish)
-        $locales = ["en"]; // Available languages: en, fr, sp, de, es
+            $data = [
+                'to' => 'user@yopmail.com',
+                'from_address' => 'noreply@yopmail.com',
+                'username' => 'XYZ',
+                'appname' => 'Example App',
+                'url' =>route('demo'),
+            ];
 
-        // Data to be passed to the email template
-        $data = [
-            'to' => 'user@yopmail.com',
-            'from_address' => 'noreply@yopmail.com',
-            'username' => 'XYZ',
-            'appname' => 'Example App',  // Add other parameters as needed
-        ];
 
-        // Send the email using the template identifier, selected locales, and data
-        EmailTemplates::sendEmail($identifier, $locales, $data);
+            $template = DB::table('mail_templates')
+                ->where('identifier', $identifier)
+                ->first();
 
-        return response()->json(['message' => 'Email sent successfully']);
+            $filePaths = [];
+            if ($template && $template->file) {
+                $files = explode(',', $template->file);
+                foreach ($files as $file) {
+                    // Get the path of each file and add to the array
+                    $filePaths[] = public_path('storage/images/' . trim($file));
+                }
+            }
+
+    
+            foreach ($locales as $locale) {
+                EmailTemplates::sendEmail($identifier, $locale, $data, $filePaths);
+            }
+
+              return response()->json(['message' => 'Email sent successfully']);
     }
 }
 

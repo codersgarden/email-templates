@@ -4,6 +4,8 @@ namespace Codersgarden\MultiLangMailer\Services;
 
 use Codersgarden\MultiLangMailer\Models\Placeholder;
 
+// use Codersgarden\MultiLangMailer\Models\Placeholder;
+
 class PlaceholderService
 {
     /**
@@ -15,19 +17,26 @@ class PlaceholderService
      */
     public function replacePlaceholders(string $text, array $data): string
     {
-        // Fetch all placeholders from the database
         $placeholders = Placeholder::all()->pluck('name')->toArray();
 
         foreach ($placeholders as $placeholder) {
             $value = $data[$placeholder] ?? '';
-            // Escape to prevent XSS
-            $escapedValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-            $text = str_replace("{{{$placeholder}}}", $escapedValue, $text);
+
+            if ($placeholder === 'url' && filter_var($value, FILTER_VALIDATE_URL)) {
+                $buttonHtml = '<a href="' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '" target="_blank" 
+                        style="display: inline-block; padding: 10px 15px; background-color: #007bff; 
+                        color: #fff; text-decoration: none; border-radius: 5px;">
+                        Click Here
+                     </a>';
+                $text = str_replace("{{{$placeholder}}}", $buttonHtml, $text);
+            } else {
+                $escapedValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+                $text = str_replace("{{{$placeholder}}}", $escapedValue, $text);
+            }
         }
 
-        // Optionally remove any undefined placeholders
+        // Remove any undefined placeholders safely
         $text = preg_replace('/{{\s*\w+\s*}}/', '', $text);
-      
         return $text;
     }
 }

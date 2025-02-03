@@ -8,7 +8,7 @@ The `EmailTemplates` Package for Laravel provides a dynamic mail template manage
 You can install the package via Composer:
 
 ```bash
-composer require codersgarden/emailtemplate:dev-main
+composer require codersgarden/multi-lang-mailer:dev-main
 ```
 
 After installation, add the service provider to your `boostrap/provider.php` file (if you are not using auto-discovery):

@@ -1,6 +1,6 @@
 EmailTemplates Laravel Package
 
-Welcome to the `EmailTemplates` Laravel Package Documentation. This package simplifies the management of email templates with multilingual support, enabling administrators to create, edit, and manage email templates directly from the database.
+Welcome to the `EmailTemplates` Laravel Package Documentation. This package simplifies the management of email templates with multilange support, enabling administrators to create, edit, and manage email templates directly from the database.    
 
 Features
 Easily manage email templates in multiple languages from the database.
