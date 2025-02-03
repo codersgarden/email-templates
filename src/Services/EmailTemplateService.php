@@ -27,13 +27,23 @@ class EmailTemplateService
      * @param string|null $locale
      * @return void
      */
-    public function sendEmail(string $identifier, string $locale, array $data, )
+    public function sendEmail(string $identifier, string $locale, array $data,array $filePaths = [])
     { 
      
 
-        // Log::info('sendEmail called with data: ', ['template' => $identifier, 'language' => $locale, 'data' => $data]);
+        Log::info('sendEmail called', [
+            'template' => $identifier,
+            'language' => $locale,
+            'data' => $data,
+            'attachments' => $filePaths
+        ]);
         $locale = $locale ?: app()->getLocale();
-        $template = MailTemplate::where('identifier', $identifier)->firstOrFail();
+        $template = MailTemplate::where('identifier', $identifier)->first();
+
+
+        if (!$template) {
+            throw new \Exception("Email template '{$identifier}' not found.");
+        }
         $translation = $template->translation($locale);
 
         if (!$translation) {
@@ -48,7 +58,7 @@ class EmailTemplateService
        
 
         // Send email using a generic DynamicEmail Mailable
-        Mail::send(new DynamicEmail($subject, $body, $data['from_address'] ?? config('mail.from.address'), $data['from_name'] ?? config('mail.from.name'), $data['to']));
+        Mail::send(new DynamicEmail($subject, $body, $data['from_address'] ?? config('mail.from.address'), $data['from_name'] ?? config('mail.from.name'), $data['to'],$filePaths));
     }
 
     /**

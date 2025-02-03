@@ -15,41 +15,44 @@ Here’s a basic example of using the package in a Laravel controller to send an
 ```php
 class TestController extends Controller
 {
-
-
-        public function sendMail()
+    public function sendMail()
     {
-        $identifier = "register";
-        $locales = ["en", "de","fr"];
-
+            $identifier = "register";
+            $locales = ["en"];
+        
             $data = [
                 'to' => 'user@yopmail.com',
                 'from_address' => 'noreply@yopmail.com',
+                'from_name' => 'Example App',
                 'username' => 'XYZ',
                 'appname' => 'Example App',
-                'url' =>route('demo'),
+                'url' => route('demo'),
             ];
-
-
-            $template = DB::table('mail_templates')
-                ->where('identifier', $identifier)
-                ->first();
-
+        
+            $template = DB::table('mail_templates')->where('identifier', $identifier)->first();
+        
             $filePaths = [];
+        
             if ($template && $template->file) {
                 $files = explode(',', $template->file);
                 foreach ($files as $file) {
-                    // Get the path of each file and add to the array
-                    $filePaths[] = public_path('storage/images/' . trim($file));
+                    $filePath = public_path('storage/images/' . trim($file));
+                    if (file_exists($filePath)) {
+                        $filePaths[] = $filePath;
+                    } else {
+                        Log::warning("Attachment file not found: " . $filePath);
+                    }
                 }
             }
-
-    
+        
+            Log::info('Attachments prepared: ', $filePaths);
+        
             foreach ($locales as $locale) {
                 EmailTemplates::sendEmail($identifier, $locale, $data, $filePaths);
             }
 
-              return response()->json(['message' => 'Email sent successfully']);
+
+            return response()->json(['message' => 'Email sent successfully']);
     }
 }
 
