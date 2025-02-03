@@ -9,12 +9,14 @@ use Codersgarden\MultiLangMailer\Models\TemplatePlaceholder;
 use Codersgarden\MultiLangMailer\Models\TemplateTranslation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateController extends Controller
 {
     /**
      * Display a listing of the templates.
      */
+
     public function index()
     {
         // Execute the query
@@ -38,22 +40,42 @@ class TemplateController extends Controller
     public function store(Request $request)
     {
 
+
+        // dd($request->hasFile('files'));
+
         // Validate input
         $validated = $request->validate([
             'identifier' => 'required|unique:mail_templates,identifier',
             'translations' => 'array',
             'translations.*.subject' => 'string',
             'translations.*.body' => 'string',
-            'placeholders' => 'nullable|array',
+            'placeholders' => 'nullable|array|min:1',
             'placeholders.*' => 'exists:placeholders,id',
+        
         ]);
+
+
         try {
 
+            $fileNames = [];
 
-            // Create template
-            $template = MailTemplate::create(['identifier' => $validated['identifier']]);
+            // If the file is present, store it
+            if ($request->hasFile('files')) {
 
-            // Attach placeholders
+                // dd($request->file('files'));
+                foreach ($request->file('files') as $file) {
+                    $fileName = $file->getClientOriginalName(); // Get the original file name
+                    $file->storeAs('images', $fileName, 'public'); // Store the file in the public disk
+                    $fileNames[] = $fileName; // Store the file name in the array
+                }
+            }
+
+            // Create template and store file path
+            $template = MailTemplate::create([
+                'identifier' => $validated['identifier'],
+                'file' => implode(',', $fileNames),
+            ]);
+
 
             foreach ($validated['placeholders'] as $placeholder) {
                 $TemplatesPlaceholders = new TemplatePlaceholder();
@@ -128,14 +150,35 @@ class TemplateController extends Controller
         ]);
 
         try {
-            // Fetch the template to update
             $template = MailTemplate::findOrFail($id);
 
-            // Update the identifier
+            // Handle files upload
+            $filePaths = [];
+            if ($template->file) {
+                // Decode existing files from the database
+                $existingFiles = explode(',', $template->file);
+                $filePaths = array_filter($existingFiles); // Filter out empty values
+            }
+
+            if ($request->hasFile('files')) {
+                $uploadedFiles = $request->file('files');
+
+                // Loop through each uploaded file and save them
+                foreach ($uploadedFiles as $file) {
+                    $fileName = $file->getClientOriginalName();
+                    $file->storeAs('images', $fileName, 'public'); // Store the file
+                    $filePaths[] = $fileName; // Add new file to the list
+                }
+            }
+
+            // Update the files column in the database (stored as JSON)
+            $template->file = implode(',', $filePaths);
+
+            // Update the template identifier
             $template->identifier = $validated['identifier'];
             $template->save();
 
-            // Remove existing placeholders and attach new ones
+            // Handle placeholders
             $template->placeholders()->detach();
             if (!empty($validated['placeholders'])) {
                 foreach ($validated['placeholders'] as $placeholderId) {
@@ -146,10 +189,8 @@ class TemplateController extends Controller
                 }
             }
 
-            // Delete existing translations for this template
+            // Delete existing translations and save new ones
             TemplateTranslation::where('mail_template_id', $template->id)->delete();
-
-            // Create new translations
             foreach ($validated['translations'] as $locale => $translation) {
                 $templateTranslation = new TemplateTranslation();
                 $templateTranslation->mail_template_id = $template->id;
@@ -159,8 +200,10 @@ class TemplateController extends Controller
                 $templateTranslation->save();
             }
 
+            // Return success response
             return redirect()->route('admin.templates.index')->with('success', __('email-templates::messages.template_updated'));
         } catch (\Exception $e) {
+            // Log error and return error message
             Log::error($e->getMessage());
             return redirect()->route('admin.templates.index')->with('error', $e->getMessage());
         }
@@ -188,6 +231,42 @@ class TemplateController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return redirect()->route('admin.templates.index')->with('error', $e->getMessage());
+        }
+    }
+
+
+    public function deleteFile(Request $request)
+    {
+        $request->validate([
+            'file_name' => 'required|string',
+            'template_id' => 'required|integer|exists:mail_templates,id',
+        ]);
+
+        try {
+            // Fetch the template
+            $template = MailTemplate::findOrFail($request->template_id);
+
+            // Decode the stored files
+            $files = $template->file ? explode(',', $template->file) : [];
+
+            // Find and remove the file
+            if (in_array($request->file_name, $files)) {
+                $filePath = public_path('storage/images/' . $request->file_name);
+
+                // Delete the file from the filesystem
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+
+                // Remove the file from the array and update the database
+                $files = array_filter($files, fn($file) => $file !== $request->file_name);
+                $template->file = implode(',', $files);
+                $template->save();
+            }
+
+            return response()->json(['success' => true, 'message' => 'File deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 }
