@@ -17,17 +17,19 @@ class TestController extends Controller
 {
     public function sendMail()
     {
-            $identifier = "register";
+            $identifier = "Reset Password";
             $locales = ["en"];
         
-            $data = [
-                'to' => 'user@yopmail.com',
-                'from_address' => 'noreply@yopmail.com',
-                'from_name' => 'Example App',
-                'username' => 'XYZ',
-                'appname' => 'Example App',
-                'url' => route('demo'),
-            ];
+           $data = [
+            'to' => 'user@yopmail.com',
+            'from_address' => 'noreply@yopmail.com',
+            'from_name' => 'Example App',
+            'username' => 'XYZ',
+            'appname' => 'Example App',
+            'url' => url('/demo'),
+            'logo' => asset('storage/images/floor.jpg'),
+            'button_text' => 'Confirm Your Email',
+        ];
         
             $template = DB::table('mail_templates')->where('identifier', $identifier)->first();
         

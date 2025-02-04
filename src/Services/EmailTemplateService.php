@@ -15,7 +15,6 @@ class EmailTemplateService
     public function __construct(PlaceholderService $placeholderService)
     {
         $this->placeholderService = $placeholderService;
-
        
     }
 
@@ -27,38 +26,36 @@ class EmailTemplateService
      * @param string|null $locale
      * @return void
      */
-    public function sendEmail(string $identifier, string $locale, array $data,array $filePaths = [])
+    public function sendEmail(string $identifier, string $locale, array $data, array $filePaths = [])
     { 
-     
-
         Log::info('sendEmail called', [
             'template' => $identifier,
             'language' => $locale,
             'data' => $data,
             'attachments' => $filePaths
         ]);
+    
         $locale = $locale ?: app()->getLocale();
         $template = MailTemplate::where('identifier', $identifier)->first();
-
-
+    
         if (!$template) {
             throw new \Exception("Email template '{$identifier}' not found.");
         }
+    
         $translation = $template->translation($locale);
-
+    
         if (!$translation) {
             throw new \Exception("Email template '{$identifier}' does not have a translation for locale '{$locale}'.");
         }
-
-        // Replace placeholders
+    
+        // Replace placeholders properly
         $subject = $this->placeholderService->replacePlaceholders($translation->subject, $data);
-
         $body = $this->placeholderService->replacePlaceholders($translation->body, $data);
-
-       
-
-        // Send email using a generic DynamicEmail Mailable
-        Mail::send(new DynamicEmail($subject, $body, $data['from_address'] ?? config('mail.from.address'), $data['from_name'] ?? config('mail.from.name'), $data['to'],$filePaths));
+    
+        // Ensure the URL is correctly formatted
+        $data['url'] = isset($data['url']) ? url($data['url']) : url('/');
+    
+        Mail::send(new DynamicEmail($subject, $body, $data['from_address'] ?? config('mail.from.address'), $data['from_name'] ?? config('mail.from.name'), $data['to'], $data, $filePaths));
     }
 
     /**

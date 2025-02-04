@@ -14,29 +14,13 @@ class PlaceholderService
      * @param string $text
      * @param array $data
      * @return string
-     */
-    public function replacePlaceholders(string $text, array $data): string
+     * 
+     */ public function replacePlaceholders(string $text, array $data): string
     {
-        $placeholders = Placeholder::all()->pluck('name')->toArray();
-
-        foreach ($placeholders as $placeholder) {
-            $value = $data[$placeholder] ?? '';
-
-            if ($placeholder === 'url' && filter_var($value, FILTER_VALIDATE_URL)) {
-                $buttonHtml = '<a href="' . htmlspecialchars($value, ENT_QUOTES, 'UTF-8') . '" target="_blank" 
-                        style="display: inline-block; padding: 10px 15px; background-color: #007bff; 
-                        color: #fff; text-decoration: none; border-radius: 5px;">
-                        Click Here
-                     </a>';
-                $text = str_replace("{{{$placeholder}}}", $buttonHtml, $text);
-            } else {
-                $escapedValue = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-                $text = str_replace("{{{$placeholder}}}", $escapedValue, $text);
-            }
+        foreach ($data as $key => $value) {
+            $text = str_replace("{{{$key}}}", htmlspecialchars($value, ENT_QUOTES, 'UTF-8'), $text);
         }
-
-        // Remove any undefined placeholders safely
-        $text = preg_replace('/{{\s*\w+\s*}}/', '', $text);
         return $text;
     }
+    
 }
