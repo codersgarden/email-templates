@@ -16,6 +16,7 @@
 
         <form action="{{ route('admin.placeholders.update', $placeholder->id) }}" method="POST">
             @csrf
+            @method('PUT')
             <div class="form-group">
                 <label for="name">{{ __('email-templates::messages.name') }}</label>
                 <input type="text" name="name" id="name" class="form-control"

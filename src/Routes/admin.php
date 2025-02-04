@@ -11,7 +11,7 @@ Route::group(['prefix' => '/email-templates', 'middleware' => ['web', 'auth']], 
         Route::get('/create', 'create')->name('admin.placeholders.create');
         Route::post('/', 'store')->name('admin.placeholders.store');
         Route::get('/{id}', 'edit')->name('admin.placeholders.edit');
-        Route::post('/{id}', 'update')->name('admin.placeholders.update');
+        Route::put('/{id}', 'update')->name('admin.placeholders.update');
         Route::delete('/{id}', 'destroy')->name('admin.placeholders.destroy');
     });
 
