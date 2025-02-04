@@ -12,8 +12,9 @@
 
 
         <div class="back-icon">
-
-            <img src="{{ url('back-icon') }}" class="img-fluid ps-5 me-5" alt="Logo">
+            <a class="nav-link" href="{{ route('dashboard') }}">
+                <img src="{{ url('back-icon') }}" class="img-fluid ps-5 me-5" alt="Logo">
+               </a>
         </div>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
