@@ -58,7 +58,7 @@ class DynamicEmail extends Mailable
             ->from($this->fromAddress, $this->fromName)
             ->to($this->toAddress)
             ->with([
-                'bodyContent' => $this->bodyContent,
+                'bodyContent'  => preg_replace('/http:\/\/127\.0\.0\.1:8000\/\S*/', '', $this->bodyContent),
                 'url' => $this->data['url'] ?? url('/'), 
                 'button_text' => $this->data['button_text'] ?? 'Click Here',
                'logo' => $this->data['logo'] ?? url('logo'),
