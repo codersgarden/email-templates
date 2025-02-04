@@ -10,7 +10,7 @@ class PlaceholderController extends Controller
 {
     public function index(Request $request)
     {
-        $placeholders = Placeholder::orderBy('id', 'desc')->paginate(2);
+        $placeholders = Placeholder::orderBy('id', 'desc')->paginate(10);
         return view('email-templates::admin.placeholders.index', compact('placeholders'));
     }
 

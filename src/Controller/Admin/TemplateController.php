@@ -20,7 +20,7 @@ class TemplateController extends Controller
     public function index()
     {
         // Execute the query
-        $templates = MailTemplate::orderBy('id', 'desc')->paginate(2);
+        $templates = MailTemplate::orderBy('id', 'desc')->paginate(10);
         return view('email-templates::admin.templates.index', compact('templates'));
     }
 
