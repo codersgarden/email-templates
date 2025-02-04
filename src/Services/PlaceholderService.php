@@ -18,7 +18,7 @@ class PlaceholderService
      */ public function replacePlaceholders(string $text, array $data): string
     {
         foreach ($data as $key => $value) {
-            $text = str_replace("{{{$key}}}", htmlspecialchars($value, ENT_QUOTES, 'UTF-8'), $text);
+            $text = str_replace("$key", htmlspecialchars($value, ENT_QUOTES, 'UTF-8'), $text);
         }
         return $text;
     }
