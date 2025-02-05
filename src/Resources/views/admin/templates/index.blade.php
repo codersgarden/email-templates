@@ -65,16 +65,7 @@
                             </button>
                         </form>
 
-
-                        {{-- <form action="{{ route('admin.templates.destroy', $template->id) }}" class="d-inline-block"
-                                method="POST"
-                                onsubmit="return confirm('{{ __('email-templates::messages.confirm_delete') }}');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-ghost text-dark">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </form> --}}
+                      
 
                     </td>
                 </tr>
