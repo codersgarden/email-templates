@@ -16,11 +16,11 @@
 
         <!-- Centered Form -->
         <div class="container mt-5">
-
             <form action="{{ route('admin.templates.update', $template->id) }}" method="POST"
-                class="mx-auto rounded col-md-6">
+                class="mx-auto rounded col-md-6" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
                 <div class="mb-3">
                     <!-- Tab Navigation -->
                     <ul class="nav nav-tabs" role="tablist">
@@ -54,7 +54,7 @@
                                 <label for="identifier"
                                     class="form-label">{{ __('email-templates::messages.identifier') }}</label>
                                 <input type="text" name="identifier" id="identifier" class="form-control"
-                                value="{{ old('identifier', $template->identifier) }}">
+                                    value="{{ old('identifier', $template->identifier) }}">
                                 @error('identifier')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -65,19 +65,33 @@
                             <div class="form-group">
                                 <label for="placeholders"
                                     class="form-label mt-2">{{ __('email-templates::messages.select_placeholders') }}</label>
-                                    <select class="form-select" name="placeholders[]" id="placeholders" multiple>
-                                        @foreach ($availablePlaceholders as $placeholder)
-                                            <option value="{{ $placeholder->id }}"
-                                                @if (in_array($placeholder->id, old('placeholders', $selectedPlaceholders))) selected @endif>
-                                                {{ $placeholder->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                <select class="form-select" name="placeholders[]" id="placeholders" multiple>
+                                    @foreach ($availablePlaceholders as $placeholder)
+                                        <option value="{{ $placeholder->id }}"
+                                            @if (in_array($placeholder->id, old('placeholders', $selectedPlaceholders))) selected @endif>
+                                            {{ $placeholder->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 @error('placeholders')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                                 <small
                                     class="form-text text-muted">{{ __('email-templates::messages.select_placeholders_help') }}</small>
+                            </div>
+                           
+
+                            <!-- File Section -->
+                            <div class="form-group">
+                                <label for="attachment" class="form-label mt-2">Attachment</label>
+                                <div class="form-check">
+                                    <input type="checkbox" name="attachment" id="attachment" class="form-check-input" 
+                                        @if(old('attachment', $template->has_attachment) == 1) checked @endif>
+                                    <label class="form-check-label" for="attachment">Include Attachment</label>
+                                </div>
+                                @error('attachment')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
@@ -117,6 +131,7 @@
                         @endforeach
                     </div>
                 </div>
+
                 <button type="submit"
                     class="btn btn-dark fs-5">{{ __('email-templates::messages.placeholder.save') }}</button>
             </form>
@@ -126,23 +141,65 @@
 
 @section('scripts')
     <script>
-          document.querySelectorAll('.editor').forEach((editor, index) => {
-        const locale = editor.id.split('-')[1]; // Get locale from editor ID
-        const textarea = document.getElementById(`translations[${locale}][body]`);
-        const oldContent = textarea.value || ''; // Get the old content from textarea
+        document.querySelectorAll('.editor').forEach((editor, index) => {
+            const locale = editor.id.split('-')[1]; // Get locale from editor ID
+            const textarea = document.getElementById(`translations[${locale}][body]`);
+            const oldContent = textarea.value || ''; // Get the old content from textarea
 
-        // Initialize Quill editor with the old content
-        const quill = new Quill(`#content-${locale}`, {
-            theme: 'snow',
+            // Initialize Quill editor with the old content
+            const quill = new Quill(`#content-${locale}`, {
+                theme: 'snow',
+            });
+
+            // Set the content of the editor to the old value
+            quill.root.innerHTML = oldContent;
+
+            // Sync content of editor with the hidden textarea
+            quill.on('text-change', function() {
+                textarea.value = quill.root.innerHTML;
+            });
         });
 
-        // Set the content of the editor to the old value
-        quill.root.innerHTML = oldContent;
 
-        // Sync content of editor with the hidden textarea
-        quill.on('text-change', function() {
-            textarea.value = quill.root.innerHTML;
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.btn-delete-file');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const fileName = this.getAttribute('data-file');
+                    const templateId = this.getAttribute('data-template-id');
+                    const fileIndex = this.getAttribute('data-index');
+                    const fileElement = document.getElementById(`file-${fileIndex}`);
+
+                    if (confirm('Are you sure you want to delete this file?')) {
+                        fetch('{{ route('admin.templates.delete-file') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    file_name: fileName,
+                                    template_id: templateId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert(data.message);
+                                    // Remove the file from the DOM
+                                    fileElement.remove();
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while deleting the file.');
+                            });
+                    }
+                });
+            });
         });
-    });
     </script>
 @endsection

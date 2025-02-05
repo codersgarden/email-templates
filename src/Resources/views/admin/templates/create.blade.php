@@ -16,7 +16,8 @@
 
         <!-- Centered Form -->
         <div class="container mt-5">
-            <form action="{{ route('admin.templates.store') }}" method="post" class="mx-auto rounded col-md-6">
+            <form action="{{ route('admin.templates.store') }}" method="post" class="mx-auto rounded col-md-6"
+                enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <!-- Tab Navigation -->
@@ -47,6 +48,8 @@
                     <div class="tab-content mt-3">
                         <!-- General Tab Content -->
                         <div id="general" class="container tab-pane active">
+
+
                             <div class="form-group">
                                 <label for="identifier"
                                     class="form-label">{{ __('email-templates::messages.identifier') }}</label>
@@ -76,7 +79,20 @@
                                 <small
                                     class="form-text text-muted">{{ __('email-templates::messages.select_placeholders_help') }}</small>
                             </div>
+
+                            <div class="form-group">
+                                <label for="attachment" class="form-label mt-2">Attachment</label>
+                                <div class="form-check">
+                                    <input type="checkbox" name="attachment" id="attachment" class="form-check-input">
+                                    <label class="form-check-label" for="attachment">Include Attachment</label>
+                                </div>
+                                @error('attachment')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+    
                         </div>
+
 
                         <!-- Locale Tabs Content -->
                         @foreach ($locales as $locale)
@@ -100,9 +116,10 @@
                                     <label for="translations[{{ $locale }}][body]" class="form-label mt-2">
                                         {{ __('email-templates::messages.body') }}
                                     </label>
-                                    <textarea name="translations[{{ $locale }}][body]" id="translations[{{ $locale }}][body]" 
-                                        hidden class="custom-textarea">{{ old('translations.' . $locale . '.body') }}</textarea>
-                                    <div id="content-{{ $locale }}" class="editor custom-editor">{!! old('translations.' . $locale . '.body') !!}</div>
+                                    <textarea name="translations[{{ $locale }}][body]" id="translations[{{ $locale }}][body]" hidden
+                                        class="custom-textarea">{{ old('translations.' . $locale . '.body') }}</textarea>
+                                    <div id="content-{{ $locale }}" class="editor custom-editor">
+                                        {!! old('translations.' . $locale . '.body') !!}</div>
                                     @error("translations.$locale.body")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
