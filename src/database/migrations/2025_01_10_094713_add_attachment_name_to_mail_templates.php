@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('mail_templates', function (Blueprint $table) {
-            $table->string('file')->nullable();
+            $table->integer('has_attachment')
+                ->default(0)
+                ->comment('1 = Yes, 0 = No');
         });
     }
 
@@ -22,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('mail_templates', function (Blueprint $table) {
-            $table->dropColumn('file');
+            $table->dropColumn('has_attachment');
         });
     }
 };

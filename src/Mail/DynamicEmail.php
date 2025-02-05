@@ -8,6 +8,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DynamicEmail extends Mailable
 {
@@ -15,11 +16,8 @@ class DynamicEmail extends Mailable
 
     protected $subjectText;
     protected $bodyContent;
-    protected $fromAddress;
-    protected $fromName;
-    protected $toAddress;
     protected $attachmentPaths;
-    protected $data;
+    protected $placeholders;
 
     /**
      * Create a new message instance.
@@ -31,15 +29,12 @@ class DynamicEmail extends Mailable
      * @param string $toAddress
      * @return void
      */
-    public function __construct(string $subjectText, string $bodyContent, string $fromAddress, string $fromName, string $toAddress, array $data = [], array $attachmentPaths = [])
+    public function __construct(string $subjectText, string $bodyContent, array $placeholders = [], array $attachments = [])
     {
         $this->subjectText = $subjectText;
         $this->bodyContent = $bodyContent;
-        $this->fromAddress = $fromAddress;
-        $this->fromName = $fromName;
-        $this->toAddress = $toAddress;
-        $this->data = $data;
-        $this->attachmentPaths = $attachmentPaths; 
+        $this->placeholders = $placeholders;
+        $this->attachments = $attachments;
     }
 
     /**
@@ -49,34 +44,19 @@ class DynamicEmail extends Mailable
      */
     public function build()
     {
-        Log::info('Building email with attachments', ['attachments' => $this->attachmentPaths]);
+        $email = $this->markdown('email-templates::emails.dynamic_email')->subject($this->subjectText)->with([
+            'bodyContent' => $this->bodyContent,
+            'url' => $this->placeholders['url'] ?? null,
+            'buttonText' => $this->placeholders['buttonText'] ?? 'Click Here',
+        ]);
 
-
-        // Ensure $this->data is properly used
-        $email = $this->markdown('email-templates::emails.dynamic_email')
-            ->subject($this->subjectText)
-            ->from($this->fromAddress, $this->fromName)
-            ->to($this->toAddress)
-            ->with([
-                'bodyContent'  => preg_replace('/http:\/\/127\.0\.0\.1:8000\/\S*/', '', $this->bodyContent),
-                'url' => $this->data['url'] ?? url('/'), 
-                'button_text' => $this->data['button_text'] ?? 'Click Here',
-               'logo' => $this->data['logo'] ?? url('logo'),
-            ]);
-
-
-        // Attachments handling
-        foreach ($this->attachmentPaths as $attachmentPath) {
-            if ($attachmentPath && file_exists($attachmentPath)) {
-                $email->attach($attachmentPath);
-                Log::info('Attachment added: ' . $attachmentPath);
-            } else {
-                Log::warning('No attachment added: ' . $attachmentPath);
+        // Attach files if any
+        foreach ($this->attachments as $attachment) {
+            if (Storage::exists($attachment)) {
+                $email->attach($attachment);
             }
         }
 
         return $email;
-
-       
     }
 }

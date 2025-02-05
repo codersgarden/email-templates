@@ -6,6 +6,7 @@ use Codersgarden\MultiLangMailer\Mail\DynamicEmail;
 use Codersgarden\MultiLangMailer\Models\MailTemplate;
 use Codersgarden\MultiLangMailer\Models\Template;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 
 class EmailTemplateService
@@ -15,7 +16,6 @@ class EmailTemplateService
     public function __construct(PlaceholderService $placeholderService)
     {
         $this->placeholderService = $placeholderService;
-       
     }
 
     /**
@@ -26,46 +26,37 @@ class EmailTemplateService
      * @param string|null $locale
      * @return void
      */
-    public function sendEmail(string $identifier, string $locale, array $data, array $filePaths = [])
-    { 
-        Log::info('sendEmail called', [
-            'template' => $identifier,
-            'language' => $locale,
-            'data' => $data,
-            'attachments' => $filePaths
-        ]);
-    
-        $locale = $locale ?: app()->getLocale();
+
+
+
+    public function sendEmail(string $email, string $identifier, array $placeholders, string $locale, array $attachments = [])
+    {
+
+
         $template = MailTemplate::where('identifier', $identifier)->first();
-    
+
         if (!$template) {
             throw new \Exception("Email template '{$identifier}' not found.");
         }
-    
-        $translation = $template->translation($locale);
-    
-        if (!$translation) {
-            throw new \Exception("Email template '{$identifier}' does not have a translation for locale '{$locale}'.");
+
+        if ($template->has_attachment == 1 && empty($attachments)) {
+            throw new \Exception("attachments are required for this email template");
         }
-    
-        // Replace placeholders properly
-        $subject = $this->placeholderService->replacePlaceholders($translation->subject, $data);
-        $body = $this->placeholderService->replacePlaceholders($translation->body, $data);
-    
-        // Ensure the URL is correctly formatted
-        $data['url'] = isset($data['url']) ? url($data['url']) : url('/');
-    
-        Mail::send(new DynamicEmail($subject, $body, $data['from_address'] ?? config('mail.from.address'), $data['from_name'] ?? config('mail.from.name'), $data['to'], $data, $filePaths));
+
+        $translatedMail = $template->translation($locale);
+        if (!$translatedMail) {
+            throw new \Exception("Email template '{$identifier}' does not have a translation for locale '{$locale}'");
+        }
+
+        $url = $placeholders['urls_and_buttons'][0]['url'] ?? null;
+        $buttonText = $placeholders['urls_and_buttons'][0]['button_text'] ?? 'Click Here';
+        $body = $this->placeholderService->replacePlaceholders($translatedMail->body, $placeholders);
+
+        Mail::to($email)->send(new DynamicEmail(
+            $this->placeholderService->replacePlaceholders($translatedMail->subject, $placeholders),
+            $body,
+            compact('url', 'buttonText'),
+            $attachments
+        ));
     }
-
-    /**
-     * Replace placeholders in the template with actual data.
-     *
-     * @param string $text
-     * @param array $data
-     * @return string
-     */
-
-
-
 }

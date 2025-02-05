@@ -40,9 +40,7 @@ class TemplateController extends Controller
     public function store(Request $request)
     {
 
-
-        // dd($request->hasFile('files'));
-
+       
         // Validate input
         $validated = $request->validate([
             'identifier' => 'required|unique:mail_templates,identifier',
@@ -51,32 +49,18 @@ class TemplateController extends Controller
             'translations.*.body' => 'string',
             'placeholders' => 'nullable|array|min:1',
             'placeholders.*' => 'exists:placeholders,id',
-        
+           
         ]);
 
 
         try {
 
-            $fileNames = [];
+        $template=new MailTemplate();
+        $template->identifier=$request->identifier;
+        $template->has_attachment = $request->has('attachment') ? 1 : 0;
+        $template->save();
 
-            // If the file is present, store it
-            if ($request->hasFile('files')) {
-
-                // dd($request->file('files'));
-                foreach ($request->file('files') as $file) {
-                    $fileName = $file->getClientOriginalName(); // Get the original file name
-                    $file->storeAs('images', $fileName, 'public'); // Store the file in the public disk
-                    $fileNames[] = $fileName; // Store the file name in the array
-                }
-            }
-
-            // Create template and store file path
-            $template = MailTemplate::create([
-                'identifier' => $validated['identifier'],
-                'file' => implode(',', $fileNames),
-            ]);
-
-
+           
             foreach ($validated['placeholders'] as $placeholder) {
                 $TemplatesPlaceholders = new TemplatePlaceholder();
                 $TemplatesPlaceholders->placeholder_id = $placeholder;
@@ -147,35 +131,14 @@ class TemplateController extends Controller
             'translations.*.body' => 'string',
             'placeholders' => 'nullable|array',
             'placeholders.*' => 'exists:placeholders,id',
+          
         ]);
 
         try {
             $template = MailTemplate::findOrFail($id);
 
-            // Handle files upload
-            $filePaths = [];
-            if ($template->file) {
-                // Decode existing files from the database
-                $existingFiles = explode(',', $template->file);
-                $filePaths = array_filter($existingFiles); // Filter out empty values
-            }
-
-            if ($request->hasFile('files')) {
-                $uploadedFiles = $request->file('files');
-
-                // Loop through each uploaded file and save them
-                foreach ($uploadedFiles as $file) {
-                    $fileName = $file->getClientOriginalName();
-                    $file->storeAs('images', $fileName, 'public'); // Store the file
-                    $filePaths[] = $fileName; // Add new file to the list
-                }
-            }
-
-            // Update the files column in the database (stored as JSON)
-            $template->file = implode(',', $filePaths);
-
-            // Update the template identifier
-            $template->identifier = $validated['identifier'];
+            $template->identifier=$request->identifier;
+            $template->has_attachment = $request->has('attachment') ? 1 : 0;
             $template->save();
 
             // Handle placeholders
