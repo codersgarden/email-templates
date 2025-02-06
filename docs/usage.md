@@ -17,44 +17,27 @@ class TestController extends Controller
 {
     public function sendMail()
     {
-            $identifier = "Reset Password";
-            $locales = ["en"];
-        
-           $data = [
-            'to' => 'user@yopmail.com',
-            'from_address' => 'noreply@yopmail.com',
-            'from_name' => 'Example App',
+             $placeholders = [
             'username' => 'XYZ',
             'appname' => 'Example App',
-            'url' => url('/demo'),
-            'logo' => asset('storage/images/floor.jpg'),
-            'button_text' => 'Confirm Your Email',
+            'email' => 'user@yopmail.com',
+            'url' => url('/dashboard'),
+            'button_text' => 'Reset Password',
         ];
-        
-            $template = DB::table('mail_templates')->where('identifier', $identifier)->first();
-        
-            $filePaths = [];
-        
-            if ($template && $template->file) {
-                $files = explode(',', $template->file);
-                foreach ($files as $file) {
-                    $filePath = public_path('storage/images/' . trim($file));
-                    if (file_exists($filePath)) {
-                        $filePaths[] = $filePath;
-                    } else {
-                        Log::warning("Attachment file not found: " . $filePath);
-                    }
-                }
-            }
-        
-            Log::info('Attachments prepared: ', $filePaths);
-        
-            foreach ($locales as $locale) {
-                EmailTemplates::sendEmail($identifier, $locale, $data, $filePaths);
-            }
+
+        $locales = ["en"];
 
 
-            return response()->json(['message' => 'Email sent successfully']);
+        $attachments = [
+            public_path('storage/images/floor.jpg'),
+            public_path('storage/images/presse03.pdf'),
+        ];
+
+        foreach ($locales as $locale) {
+            EmailTemplates::sendEmail("someone@yopmail.com", "demo", $placeholders, $locale, $attachments);
+        }
+
+        return response()->json(['message' => 'Email sent successfully']);
     }
 }
 

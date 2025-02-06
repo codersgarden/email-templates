@@ -4,9 +4,7 @@ namespace Codersgarden\MultiLangMailer\Services;
 
 use Codersgarden\MultiLangMailer\Mail\DynamicEmail;
 use Codersgarden\MultiLangMailer\Models\MailTemplate;
-use Codersgarden\MultiLangMailer\Models\Template;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 
 class EmailTemplateService
@@ -29,34 +27,49 @@ class EmailTemplateService
 
 
 
-    public function sendEmail(string $email, string $identifier, array $placeholders, string $locale, array $attachments = [])
-    {
-
-
-        $template = MailTemplate::where('identifier', $identifier)->first();
-
-        if (!$template) {
-            throw new \Exception("Email template '{$identifier}' not found.");
-        }
-
-        if ($template->has_attachment == 1 && empty($attachments)) {
-            throw new \Exception("attachments are required for this email template");
-        }
-
-        $translatedMail = $template->translation($locale);
-        if (!$translatedMail) {
-            throw new \Exception("Email template '{$identifier}' does not have a translation for locale '{$locale}'");
-        }
-
-        $url = $placeholders['urls_and_buttons'][0]['url'] ?? null;
-        $buttonText = $placeholders['urls_and_buttons'][0]['button_text'] ?? 'Click Here';
-        $body = $this->placeholderService->replacePlaceholders($translatedMail->body, $placeholders);
-
-        Mail::to($email)->send(new DynamicEmail(
-            $this->placeholderService->replacePlaceholders($translatedMail->subject, $placeholders),
-            $body,
-            compact('url', 'buttonText'),
-            $attachments
-        ));
-    }
+     public function sendEmail(string $email, string $identifier, array $placeholders, string $locale, array $attachments = [])
+     {
+         $template = MailTemplate::where('identifier', $identifier)->first();
+     
+         if (!$template) {
+             throw new \Exception("Email template '{$identifier}' not found.");
+         }
+     
+         if ($template->has_attachment == 1 && empty($attachments)) {
+             throw new \Exception("Attachments are required for this email template.");
+         }
+     
+         $translatedMail = $template->translation($locale);
+         if (!$translatedMail) {
+             throw new \Exception("Email template '{$identifier}' does not have a translation for locale '{$locale}'");
+         }
+     
+         $url = $placeholders['url'] ?? null;
+         $buttonText = $placeholders['button_text'] ?? 'Click Here';
+     
+         // Ensure placeholders are converted to strings
+         $placeholders = array_map(function ($value) {
+             return is_array($value) ? json_encode($value) : $value;
+         }, $placeholders);
+     
+         $body = $this->placeholderService->replacePlaceholders($translatedMail->body, $placeholders);
+     
+         $emailObj = new DynamicEmail(
+             $this->placeholderService->replacePlaceholders($translatedMail->subject, $placeholders),
+             $body,
+             compact('url', 'buttonText')
+         );
+     
+         // Handle attachments properly
+         foreach ($attachments as $attachment) {
+             if (file_exists($attachment)) {
+                 $emailObj->attach($attachment);
+             } else {
+                 Log::error("Attachment not found: {$attachment}");
+             }
+         }
+     
+         // Send the email with attachments
+         Mail::to($email)->send($emailObj);
+     }
 }
