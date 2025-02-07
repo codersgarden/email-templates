@@ -28,7 +28,12 @@ class TestController extends Controller
             'appname' => 'Example App',     // Placeholder for the app name
             'email' => 'user@yopmail.com',  // Placeholder for the user's email address
             'url' => url('/dashboard'),     // Placeholder for the URL (dashboard)
-            'button_text' => 'Reset Password', // Placeholder for the button text (used in the email template)
+            'button_text' => 
+            ['reset_link' => 'https://example.com/password-reset?token=abcd1234', 'button_text' => 'reset Link'],
+                ['cancel_link' => 'https://example.com/cancel-password-reset?token=abcd1234', 'button_text' => 'Cancel Link'],
+                ['privacy_policy_url' => 'https://example.com/cancel-password-reset?token=abcd1234', 'button_text' => 'Privacy Policy'],
+            
+            // Placeholder for the button text (used in the email template)
         ];
 
         // Define the locales/languages to send the email in (English here)
