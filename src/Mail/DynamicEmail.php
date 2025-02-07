@@ -41,10 +41,12 @@ class DynamicEmail extends Mailable
      */
     public function build()
     {
-        
+        $logoPath = config('email-templates.logo');
+        $logoUrl = $logoPath ? asset($logoPath) : null;
         $email = $this->markdown('email-templates::emails.dynamic_email')
             ->subject($this->subjectText)
             ->with([
+                'logoUrl' => $logoUrl,
                 'bodyContent' => $this->bodyContent,
                 'url' => $this->data['url'] ?? null,
                 'buttonText' => $this->data['buttonText'] ?? 'Click Here',
