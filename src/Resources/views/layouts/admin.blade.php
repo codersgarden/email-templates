@@ -72,4 +72,24 @@
     });
 </script>
 
+
+ <!-- Include Choices.js from CDN -->
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+ <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+ <script>
+     document.addEventListener('DOMContentLoaded', function () {
+         const placeholderSelect = document.getElementById('placeholders');
+         if (placeholderSelect) {
+             new Choices(placeholderSelect, {
+                 removeItemButton: true,  // Allows users to remove selected options
+                 searchEnabled: true,  // Enables search functionality
+                 placeholder: true,
+                 placeholderValue: "Select Placeholders",  // Custom placeholder text
+             });
+         }
+     });
+ </script>
+
+
 </html>

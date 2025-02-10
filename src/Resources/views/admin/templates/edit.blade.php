@@ -65,19 +65,17 @@
                             <div class="form-group">
                                 <label for="placeholders"
                                     class="form-label mt-2">{{ __('email-templates::messages.select_placeholders') }}</label>
-                                <select class="form-select" name="placeholders[]" id="placeholders" multiple>
-                                    @foreach ($availablePlaceholders as $placeholder)
-                                        <option value="{{ $placeholder->id }}"
-                                            @if (in_array($placeholder->id, old('placeholders', $selectedPlaceholders))) selected @endif>
-                                            {{ $placeholder->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                    <select class="form-control" name="placeholders[]" id="placeholders" multiple>
+                                        @foreach ($availablePlaceholders as $placeholder)
+                                            <option value="{{ $placeholder->id }}"
+                                                @if (in_array($placeholder->id, old('placeholders', $selectedPlaceholders))) selected @endif>
+                                                {{ $placeholder->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 @error('placeholders')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
-                                <small
-                                    class="form-text text-muted">{{ __('email-templates::messages.select_placeholders_help') }}</small>
                             </div>
                            
 
@@ -140,6 +138,8 @@
 @endsection
 
 @section('scripts')
+
+
     <script>
         document.querySelectorAll('.editor').forEach((editor, index) => {
             const locale = editor.id.split('-')[1]; // Get locale from editor ID
@@ -161,6 +161,45 @@
         });
 
 
-       
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.btn-delete-file');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const fileName = this.getAttribute('data-file');
+                    const templateId = this.getAttribute('data-template-id');
+                    const fileIndex = this.getAttribute('data-index');
+                    const fileElement = document.getElementById(`file-${fileIndex}`);
+
+                    if (confirm('Are you sure you want to delete this file?')) {
+                        fetch('{{ route('admin.templates.delete-file') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    file_name: fileName,
+                                    template_id: templateId
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    alert(data.message);
+                                    // Remove the file from the DOM
+                                    fileElement.remove();
+                                } else {
+                                    alert('Error: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while deleting the file.');
+                            });
+                    }
+                });
+            });
+        });
     </script>
 @endsection

@@ -54,7 +54,7 @@
                                 <label for="identifier"
                                     class="form-label">{{ __('email-templates::messages.identifier') }}</label>
                                 <input type="text" name="identifier" id="identifier" class="form-control"
-                                    value="{{ old('identifier') }}">
+                                    value="{{ old('identifier') }}" placeholder="{{ __('email-templates::messages.identifier') }}">
                                 @error('identifier')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
@@ -76,8 +76,6 @@
                                 @error('placeholders')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
-                                <small
-                                    class="form-text text-muted">{{ __('email-templates::messages.select_placeholders_help') }}</small>
                             </div>
 
                             <div class="form-group">
@@ -106,7 +104,7 @@
                                     <input type="text" class="form-control"
                                         name="translations[{{ $locale }}][subject]"
                                         id="translations[{{ $locale }}][subject]" class="form-control"
-                                        value="{{ old('translations.' . $locale . '.subject') }}">
+                                        value="{{ old('translations.' . $locale . '.subject') }}" placeholder="{{ __('email-templates::messages.subject') }}">
                                     @error("translations.$locale.subject")
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
