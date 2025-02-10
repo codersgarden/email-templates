@@ -160,46 +160,5 @@
             });
         });
 
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const deleteButtons = document.querySelectorAll('.btn-delete-file');
-
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const fileName = this.getAttribute('data-file');
-                    const templateId = this.getAttribute('data-template-id');
-                    const fileIndex = this.getAttribute('data-index');
-                    const fileElement = document.getElementById(`file-${fileIndex}`);
-
-                    if (confirm('Are you sure you want to delete this file?')) {
-                        fetch('{{ route('admin.templates.delete-file') }}', {
-                                method: 'POST',
-                                headers: {
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    file_name: fileName,
-                                    template_id: templateId
-                                })
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    alert(data.message);
-                                    // Remove the file from the DOM
-                                    fileElement.remove();
-                                } else {
-                                    alert('Error: ' + data.message);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                                alert('An error occurred while deleting the file.');
-                            });
-                    }
-                });
-            });
-        });
     </script>
 @endsection
