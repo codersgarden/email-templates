@@ -22,7 +22,11 @@ class CheckPermission
 
         $allowedRoutes = [
             'admin.templates.index',
+            'admin.templates.create',
+            'admin.templates.edit',
             'admin.placeholders.index',
+            'admin.placeholders.create',
+            'admin.placeholders.edit',
         ];
 
         // Allow access if the user is on an allowed route
