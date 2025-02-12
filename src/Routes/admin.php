@@ -4,6 +4,8 @@ use Codersgarden\MultiLangMailer\Controller\Admin\PlaceholderController;
 use Codersgarden\MultiLangMailer\Controller\Admin\TemplateController;
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::group(['prefix' => '/email-templates', 'middleware' => ['web', 'auth']], function () {
 
     Route::controller(PlaceholderController::class)->prefix('placeholders')->group(function () {
