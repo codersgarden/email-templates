@@ -9,43 +9,16 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckPermission
 {
+    
     public function handle(Request $request, Closure $next)
-    {
-        // Get the authenticated user
-        $user = Auth::user();
-
-        $allowedEmail  = config('email-templates.allowedEmail');
-
-        if ($allowedEmail && (!$user || $user->email !== $allowedEmail)) {
+        {
+            if(in_array(Auth::user()->email, config('email-templates.allowedEmail'))) {
+                return $next($request);
+            }
             abort(403, 'Access Denied');
         }
-
-        $allowedRoutes = [
-            'admin.templates.index',
-            'admin.templates.create',
-            'admin.templates.store',
-            'admin.templates.edit',
-            'admin.templates.update',
-            'admin.templates.destroy',
-            'admin.placeholders.index',
-            'admin.placeholders.create',
-            'admin.placeholders.store',
-            'admin.placeholders.edit',
-            'admin.placeholders.update',
-            'admin.placeholders.destroy'
-        ];
-
-        // Allow access if the user is on an allowed route
-        if (in_array($request->route()->getName(), $allowedRoutes)) {
-            return $next($request);
-        }
-
-        // If the route is not allowed, deny access
-        abort(403, 'Access Denied');
-
-
-    }
+}
 
 
     
-}
+

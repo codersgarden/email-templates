@@ -12,7 +12,7 @@
 
 
         <div class="back-icon">
-            <a class="nav-link" href={{ config('email-templates.url') }}>
+            <a class="nav-link" href={{ route(config('email-templates.fallbackUrl')) }}>
                 <img src="{{ url('back-icon') }}" class="img-fluid ps-5 me-5" alt="Logo">
                </a>
         </div>
