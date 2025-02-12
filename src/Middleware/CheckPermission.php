@@ -24,9 +24,13 @@ class CheckPermission
             'admin.templates.index',
             'admin.templates.create',
             'admin.templates.edit',
+            'admin.templates.update',
+            'admin.templates.destroy',
             'admin.placeholders.index',
             'admin.placeholders.create',
             'admin.placeholders.edit',
+            'admin.placeholders.update',
+            'admin.placeholders.destroy'
         ];
 
         // Allow access if the user is on an allowed route
