@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <img src="{{ config('email-templates.logo') ? asset(config('email-templates.logo')) : url('logo') }}"
-            width="{{ config('email-templates.logo') ? 160 : 100 }}"
+          width="{{ config('email-templates.logo_width')}}"
             class="img-fluid ms-lg-5 me-lg-5 ms-md-0 me-md-0 ms-sm-0 me-sm-0" alt="Logo">
         <div class="vr ms-5 align-self-center" style="height: 30px"></div>
 

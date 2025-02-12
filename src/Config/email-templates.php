@@ -12,4 +12,6 @@ return [
 
     // The email address allowed to access certain routes or features
     //'allowedEmail' => ['admin123@yopmail.com'],
+
+    'logo_width' =>100,
 ];
