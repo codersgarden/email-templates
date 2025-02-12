@@ -2,11 +2,12 @@
 
 use Codersgarden\MultiLangMailer\Controller\Admin\PlaceholderController;
 use Codersgarden\MultiLangMailer\Controller\Admin\TemplateController;
+use Codersgarden\MultiLangMailer\Middleware\CheckPermission;
 use Illuminate\Support\Facades\Route;
 
 
 
-Route::group(['prefix' => '/email-templates', 'middleware' => ['web', 'auth']], function () {
+Route::middleware(['auth', 'web', CheckPermission::class])->prefix('/email-templates')->group(function () {
 
     Route::controller(PlaceholderController::class)->prefix('placeholders')->group(function () {
         Route::get('/', 'index')->name('admin.placeholders.index');
