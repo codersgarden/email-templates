@@ -3,7 +3,7 @@
 return [
 
     'default_sender' => env('MAIL_FROM_ADDRESS', 'no-reply@example.com'),
-    'supported_locales' => ['en', 'fr', 'de'],
+    'supported_locales' => ['en','de'],
     'placeholder_data_types' => ['string', 'array', 'object', 'int', 'float', 'boolean', 'date', 'datetime', 'url'],
     // 'logo' => 'storage/images/floor.jpg',     // Path to the logo image
 
