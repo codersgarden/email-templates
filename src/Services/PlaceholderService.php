@@ -80,10 +80,7 @@ class PlaceholderService
                     }
                 }
             }
-        } else {
-            // Log error if 'button' data is missing or not an array
-            Log::error('Button data is missing or not an array');
-        }
+        } 
 
         // Remove any remaining curly brackets (unmatched placeholders)
         return preg_replace('/[{}]/', '', $text);
