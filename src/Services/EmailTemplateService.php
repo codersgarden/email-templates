@@ -62,10 +62,13 @@ class EmailTemplateService
      
          // Handle attachments properly
          foreach ($attachments as $attachment) {
-             if (file_exists($attachment)) {
-                 $emailObj->attach($attachment);
+             $path = is_array($attachment) ? $attachment['path'] : $attachment;
+             $name = is_array($attachment) ? ($attachment['name'] ?? basename($path)) : null;
+
+             if (file_exists($path)) {
+                 $emailObj->attach($path, $name ? ['as' => $name] : []);
              } else {
-                 Log::error("Attachment not found: {$attachment}");
+                 Log::error("Attachment not found: {$path}");
              }
          }
      
