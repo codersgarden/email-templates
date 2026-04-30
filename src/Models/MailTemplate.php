@@ -8,7 +8,7 @@ class MailTemplate extends Model
 {
 
     protected $table = 'mail_templates';
-    protected $fillable = ['identifier'];
+    protected $fillable = ['identifier', 'has_attachment', 'attachment_name'];
     public function translations()
     {
         return $this->hasMany(TemplateTranslation::class, 'mail_template_id');

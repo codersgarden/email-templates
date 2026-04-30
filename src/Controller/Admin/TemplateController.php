@@ -49,7 +49,7 @@ class TemplateController extends Controller
             'translations.*.body' => 'string',
             'placeholders' => 'nullable|array|min:1',
             'placeholders.*' => 'exists:placeholders,id',
-           
+            'attachment_name' => 'nullable|string|max:255',
         ]);
 
 
@@ -58,6 +58,7 @@ class TemplateController extends Controller
         $template=new MailTemplate();
         $template->identifier=$request->identifier;
         $template->has_attachment = $request->has('attachment') ? 1 : 0;
+        $template->attachment_name = $request->has('attachment') ? $request->input('attachment_name') : null;
         $template->save();
 
            
@@ -131,7 +132,7 @@ class TemplateController extends Controller
             'translations.*.body' => 'string',
             'placeholders' => 'nullable|array',
             'placeholders.*' => 'exists:placeholders,id',
-          
+            'attachment_name' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -139,6 +140,7 @@ class TemplateController extends Controller
 
             $template->identifier=$request->identifier;
             $template->has_attachment = $request->has('attachment') ? 1 : 0;
+            $template->attachment_name = $request->has('attachment') ? $request->input('attachment_name') : null;
             $template->save();
 
             // Handle placeholders

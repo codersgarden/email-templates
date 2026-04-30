@@ -81,12 +81,22 @@
                             <div class="form-group">
                                 <label for="attachment" class="form-label mt-2">Attachment</label>
                                 <div class="form-check">
-                                    <input type="checkbox" name="attachment" id="attachment" class="form-check-input">
+                                    <input type="checkbox" name="attachment" id="attachment" class="form-check-input"
+                                        @if(old('attachment')) checked @endif>
                                     <label class="form-check-label" for="attachment">Include Attachment</label>
                                 </div>
                                 @error('attachment')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
+
+                                <div id="attachment-name-wrapper" class="mt-2" style="display: {{ old('attachment') ? 'block' : 'none' }};">
+                                    <input type="text" name="attachment_name" id="attachment_name" class="form-control"
+                                        placeholder="File name (e.g. invoice.pdf)"
+                                        value="{{ old('attachment_name') }}">
+                                    @error('attachment_name')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
     
                         </div>
@@ -136,6 +146,10 @@
 
 @section('scripts')
     <script>
+        document.getElementById('attachment').addEventListener('change', function () {
+            document.getElementById('attachment-name-wrapper').style.display = this.checked ? 'block' : 'none';
+        });
+
         // Initialize Quill editor for each locale
         document.querySelectorAll('.editor').forEach((editor, index) => {
             const locale = editor.id.split('-')[1]; // Get locale from editor ID
